@@ -1,3 +1,5 @@
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import { useState, useEffect, useCallback, useRef } from "react";
 
 // ─── Storage ───────────────────────────────────────────────────────────────
@@ -627,4 +629,10 @@ const Tx = {
   input: { display: "block", width: "100%", background: "#0a0e1a", border: `1px solid ${C.border}`, borderRadius: 10, color: C.text, padding: "11px 14px", fontSize: 14, marginBottom: 8, outline: "none", boxSizing: "border-box", fontFamily: "inherit" },
   btnPrimary: { background: `linear-gradient(135deg,${C.accent},${C.accentB})`, color: "#000", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 14, fontWeight: 700, cursor: "pointer", width: "100%", letterSpacing: "0.02em" },
   btnSmall: { background: "#1a2038", color: C.text, border: `1px solid ${C.border}`, borderRadius: 8, padding: "9px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", width: "100%" },
+  
 };
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)
