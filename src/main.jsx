@@ -62,13 +62,15 @@ export default function App() {
   const fileRef = useRef();
 
   useEffect(() => {
-    window.storage.get(STORAGE_KEY).then(r => {
-      if (r?.value) setData(JSON.parse(r.value));
-    }).catch(() => {}).finally(() => setLoading(false));
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) setData(JSON.parse(raw));
+    } catch {}
+    setLoading(false);
   }, []);
 
   const persist = useCallback(d => {
-    window.storage.set(STORAGE_KEY, JSON.stringify(d)).catch(() => {});
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch {}
   }, []);
 
   const update = fn => setData(prev => {
