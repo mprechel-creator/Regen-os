@@ -1259,4 +1259,159 @@ export default function App() {
 
                       {/* What */}
                       <div style={{ padding: "14px 16px 0" }}>
-                        <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700,
+                        <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>What To Take / Do</div>
+                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: "pre-line" }}>{action.what}</div>
+                      </div>
+
+                      {/* Timing */}
+                      <div style={{ padding: "14px 16px 0" }}>
+                        <div style={{ fontSize: 10, color: C.accent, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>Timing</div>
+                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7 }}>{action.timing}</div>
+                      </div>
+
+                      {/* Brands */}
+                      <div style={{ padding: "14px 16px 0" }}>
+                        <div style={{ fontSize: 10, color: C.purple, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>Brands / Sources</div>
+                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7 }}>{action.brands}</div>
+                      </div>
+
+                      {/* Note */}
+                      {action.note && (
+                        <div style={{ margin: "14px 16px 0", background: C.orange + "10", border: `1px solid ${C.orange}30`, borderRadius: 10, padding: "12px 14px" }}>
+                          <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>⚑ Important Note</div>
+                          <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{action.note}</div>
+                        </div>
+                      )}
+
+                      {/* Mark complete button */}
+                      <div style={{ padding: 16 }}>
+                        <button
+                          style={{ ...isComplete ? Tx.btnSmall : Tx.btnPrimary, width: "100%" }}
+                          onClick={() => toggleActionComplete(action.id)}>
+                          {isComplete ? "✓ Completed — Tap to Undo" : "Mark as Complete"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+      </div>
+
+      {/* Bottom nav */}
+      <nav style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: C.surface, borderTop: `1px solid ${C.border}`, display: "flex", padding: "8px 0 env(safe-area-inset-bottom,8px)" }}>
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "6px 0", color: tab === t.id ? C.accent : C.muted }}>
+            <span style={{ fontSize: tab === "protocol" && t.id === "protocol" ? 14 : 18 }}>{t.id === "protocol" ? "⬢" : t.icon}</span>
+            <span style={{ fontSize: 10, fontWeight: tab === t.id ? 700 : 500, letterSpacing: "0.04em" }}>{t.label}</span>
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+// ── PDF Results Panel ─────────────────────────────────────────────────────
+function PDFResultsPanel({ results, onImport, onDismiss }) {
+  const [selected, setSelected] = useState(new Set(results.map((_, i) => i)));
+  const toggle = i => setSelected(prev => { const s = new Set(prev); s.has(i) ? s.delete(i) : s.add(i); return s; });
+  const flagColor = f => f === "H" ? "#ff8c42" : f === "L" ? "#60a5fa" : C.subtle;
+
+  return (
+    <div style={{ background: "#0a1428", border: `1px solid ${C.accentB}40`, borderRadius: 16, padding: 20, marginBottom: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 15, color: C.text }}>PDF Results Found</div>
+          <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{results.length} values extracted · {selected.size} selected</div>
+        </div>
+        <button style={{ background: "none", border: "none", color: C.muted, fontSize: 20, cursor: "pointer" }} onClick={onDismiss}>×</button>
+      </div>
+      <div style={{ maxHeight: 300, overflowY: "auto", marginBottom: 14 }}>
+        {results.map((r, i) => (
+          <div key={i} onClick={() => toggle(i)}
+            style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 10, marginBottom: 6, background: selected.has(i) ? "#0d2040" : "#0a0e1a", border: `1px solid ${selected.has(i) ? C.accentB + "40" : C.border}`, cursor: "pointer" }}>
+            <div style={{ width: 18, height: 18, borderRadius: 4, background: selected.has(i) ? C.accentB : "transparent", border: `2px solid ${selected.has(i) ? C.accentB : C.muted}`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              {selected.has(i) && <span style={{ color: "#000", fontSize: 11, fontWeight: 900 }}>✓</span>}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{r.name}</div>
+              {r.reference && <div style={{ fontSize: 11, color: C.muted }}>Ref: {r.reference}</div>}
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: r.flag && r.flag !== "normal" ? flagColor(r.flag) : C.accent }}>{r.value} {r.unit}</div>
+              {r.flag && r.flag !== "normal" && <div style={{ fontSize: 10, fontWeight: 700, color: flagColor(r.flag) }}>{r.flag === "H" ? "HIGH" : "LOW"}</div>}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 10 }}>
+        <button style={{ ...Tx.btnSmall, flex: 1 }} onClick={() => setSelected(new Set(results.map((_, i) => i)))}>Select all</button>
+        <button style={{ ...Tx.btnPrimary, flex: 2 }} onClick={() => onImport(results.filter((_, i) => selected.has(i)))}>
+          Import {selected.size} results
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Small components ──────────────────────────────────────────────────────
+function StatCard({ icon, label, val, sub, color }) {
+  return (
+    <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 16 }}>
+      <div style={{ fontSize: 18, color, marginBottom: 8 }}>{icon}</div>
+      <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 16, fontWeight: 700, color, marginBottom: 3 }}>{val}</div>
+      <div style={{ fontSize: 11, color: C.muted }}>{sub}</div>
+    </div>
+  );
+}
+
+function Badge({ color, children }) {
+  return <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 9px", borderRadius: 20, background: color + "20", color, border: `1px solid ${color}40`, letterSpacing: "0.05em" }}>{children}</span>;
+}
+
+function PTag({ name, dose, color = C.accent }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "7px 12px", borderRadius: 8, background: color + "15", border: `1px solid ${color}30`, color }}>
+      <span style={{ fontWeight: 700, fontSize: 12 }}>{name}</span>
+      <span style={{ fontSize: 10, opacity: 0.8 }}>{dose}</span>
+    </div>
+  );
+}
+
+function Card({ children }) {
+  return <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, marginBottom: 14 }}>{children}</div>;
+}
+
+function Row({ children }) {
+  return <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 0", borderBottom: `1px solid ${C.border}`, flexWrap: "wrap" }}>{children}</div>;
+}
+
+function PageTitle({ children }) {
+  return <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, margin: "0 0 16px", letterSpacing: "-0.02em" }}>{children}</h1>;
+}
+
+function SectionTitle({ children }) {
+  return <h2 style={{ fontSize: 14, fontWeight: 700, color: C.subtle, margin: "20px 0 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>{children}</h2>;
+}
+
+function Empty({ children }) {
+  return <p style={{ color: C.muted, fontSize: 13, fontStyle: "italic", padding: "8px 0" }}>{children}</p>;
+}
+
+const Tx = {
+  label: { display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6, marginTop: 12 },
+  input: { display: "block", width: "100%", background: "#0a0e1a", border: `1px solid ${C.border}`, borderRadius: 10, color: C.text, padding: "11px 14px", fontSize: 14, marginBottom: 8, outline: "none", boxSizing: "border-box", fontFamily: "inherit" },
+  btnPrimary: { background: `linear-gradient(135deg,${C.accent},${C.accentB})`, color: "#000", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 14, fontWeight: 700, cursor: "pointer", width: "100%", letterSpacing: "0.02em" },
+  btnSmall: { background: "#1a2038", color: C.text, border: `1px solid ${C.border}`, borderRadius: 8, padding: "9px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", width: "100%" },
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)
