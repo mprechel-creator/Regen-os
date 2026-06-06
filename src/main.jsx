@@ -35,60 +35,64 @@ const C = {
 // ─── Supplement Stack ──────────────────────────────────────────────────────
 const SUPPLEMENTS = [
   // MORNING
-  { id: "nmn", time: "morning", label: "NMN", dose: "250–500mg", form: "Capsule", status: "pending", source: "protocol",
+  { id: "nmn", time: "morning", phase: 3, label: "NMN", dose: "250–500mg", form: "Capsule", status: "pending", source: "protocol",
     why: "Addresses PPARGC1A AA mitochondrial biogenesis impairment upstream. NAD+ activates SIRT1 → PGC-1 alpha — the exact signaling pathway your variant reduces. Works upstream of CoQ10 and PQQ already in your OwnIt stack.",
     target: "Energy Expenditure · Mitochondrial Function · Adipogenesis",
-    note: "Take on empty stomach or light meal. Morning timing supports circadian NAD+ rhythm." },
-  { id: "alphagpc", time: "morning", label: "Alpha-GPC", dose: "300–600mg", form: "Capsule", status: "pending", source: "protocol",
-    why: "APOE E4 carriers have accelerated neural choline use. Alpha-GPC crosses the blood-brain barrier and directly supports acetylcholine synthesis — better CNS delivery than choline bitartrate in your OwnIt stack.",
+    note: "Take on empty stomach or light meal. Morning timing supports circadian NAD+ rhythm. Phase 3 first-in — start NMN alone before the other cognitive/energy compounds, since NAD+ boosting can affect sleep and energy. Keep to 250–500mg given your FOXO3 TT longevity variant." },
+  { id: "alphagpc", time: "morning", phase: 3, label: "Alpha-GPC", dose: "300–600mg", form: "Capsule", status: "pending", source: "protocol",
+    why: "Choline is a named HIGH-impact nutrient pathway in your report — you have a genetically increased dietary choline requirement (PEMT GC variant reduces endogenous choline synthesis). Layered on APOE E4's accelerated neural choline use, this is a documented need, not an inference. Alpha-GPC crosses the blood-brain barrier and directly supports acetylcholine synthesis — better CNS delivery than choline bitartrate in your OwnIt stack.",
     target: "APOE E4 · Memory & Brain · Mood & Behavior",
-    note: "Start at 300mg. Some people find higher doses (600mg+) cause mild headache — adjust to tolerance." },
-  { id: "lionsmane", time: "morning", label: "Lion's Mane Extract", dose: "500–1000mg", form: "Capsule (fruiting body)", status: "pending", source: "protocol",
+    note: "Start at 300mg. COMT GA means you clear neuroactive compounds slowly — introduce this a week after NMN, on its own, and watch for headache or overstimulation before increasing." },
+  { id: "lionsmane", time: "morning", phase: 3, label: "Lion's Mane Extract", dose: "500–1000mg", form: "Capsule (fruiting body)", status: "pending", source: "protocol",
     why: "Stimulates NGF (Nerve Growth Factor), promoting neuronal maintenance and plasticity. Directly relevant for memory & brain VERY HIGH + APOE E4 status.",
     target: "Memory & Brain · APOE E4 · Cognitive Function",
     note: "Must be fruiting body extract — not mycelium on grain. Brands: Host Defense, Real Mushrooms." },
-  { id: "glutathione", time: "morning", label: "S-Acetyl Glutathione", dose: "200mg", form: "Capsule", status: "pending", source: "protocol",
-    why: "GSTM1 DEL is a complete deletion — zero GSTM1 enzyme. S-acetyl form survives digestion and enters cells intact, unlike reduced glutathione in OwnIt which is largely destroyed before absorption.",
+  { id: "glutathione", time: "morning", phase: 2, label: "S-Acetyl Glutathione", dose: "200mg", form: "Capsule", status: "pending", source: "protocol",
+    why: "GSTM1 + GSTT1 both deleted — your glutathione system carries more load with less enzymatic backup. S-acetyl form survives digestion and enters cells intact, unlike reduced glutathione in OwnIt which is largely destroyed before absorption.",
     target: "Oxidative Stress · Detoxification · Recovery",
-    note: "Add alongside OwnIt — NAC in your stack still contributes to endogenous glutathione. These work together." },
+    note: "Add alongside OwnIt — NAC in your stack still contributes to endogenous glutathione. These work together. Phase 2 anchor for your GST-null status." },
+  { id: "glycine", time: "evening", phase: 2, label: "Glycine", dose: "3–5g", form: "Powder", status: "pending", source: "protocol",
+    why: "Glycine is the rate-limiting amino acid for glutathione synthesis (cysteine, covered by your NAC, is the other). With GSTM1 + GSTT1 both deleted, supporting endogenous glutathione production is high-value. Glycine also improves sleep quality and supports collagen synthesis — hitting three of your VERY HIGH pathways at once.",
+    target: "Oxidative Stress · Sleep · Collagen & Joints · Detoxification",
+    note: "Take at night — glycine lowers core body temperature slightly and improves sleep onset, supporting your APOE E4 glymphatic clearance window. Low cost, well tolerated. Pairs naturally with magnesium glycinate." },
   // WITH MEALS
-  { id: "ownit", time: "meals", label: "OwnIt Stack", dose: "Per label", form: "Capsule blend", status: "active", source: "ownit",
+  { id: "ownit", time: "meals", phase: 0, label: "OwnIt Stack", dose: "Per label", form: "Capsule blend", status: "active", source: "ownit",
     why: "Core cellular nutrition stack based on Cellular Micronutrient Analysis. Contains 5-MTHF and methylcobalamin in active forms required by MTHFR 677 TT homozygous genotype. Also includes CoQ10, PQQ, curcumin, boswellia, EGCG, zinc, selenium, NAC, alpha-lipoic acid, and B vitamins in active forms.",
     target: "Methylation · Oxidative Stress · Inflammation · Mitochondrial Function",
-    note: "Take with food — fat-soluble components require dietary fat for absorption." },
-  { id: "omega3", time: "meals", label: "EPA+DHA Omega-3", dose: "2–3g EPA+DHA combined", form: "Softgel (triglyceride form)", status: "pending", source: "protocol",
+    note: "Already active — your foundation. Formulated specifically off your cell composition; not something to drop or substitute. Take with food — fat-soluble components require dietary fat for absorption." },
+  { id: "omega3", time: "meals", phase: 1, label: "EPA+DHA Omega-3", dose: "2–3g EPA+DHA combined", form: "Softgel (triglyceride form)", status: "pending", source: "protocol",
     why: "FADS1 GT + FADS2 CG variants mean you convert plant-based ALA to EPA/DHA poorly. Combined with APOE E4 neuroinflammation risk, marine-source omega-3 is essential — not optional. E4 carriers show greater cognitive benefit from omega-3 specifically.",
     target: "Inflammation · APOE E4 · Vascular Health · Mood & Behavior",
-    note: "Triglyceride form (rTG) has ~70% better bioavailability. Do not rely on flaxseed — FADS variants impair ALA conversion." },
-  { id: "resveratrol", time: "meals", label: "Trans-Resveratrol", dose: "250–500mg", form: "Capsule", status: "pending", source: "protocol",
+    note: "Triglyceride form (rTG) has ~70% better bioavailability. Do not rely on flaxseed — FADS variants impair ALA conversion. Phase 1 foundation — nothing stimulating, safe to start first." },
+  { id: "resveratrol", time: "meals", phase: 3, label: "Trans-Resveratrol", dose: "250–500mg", form: "Capsule", status: "pending", source: "protocol",
     why: "Activates SIRT1, upregulates BDNF, reduces amyloid aggregation (APOE E4 mechanism), and activates eNOS for vascular health (ENOS GT variant). One compound addressing both APOE E4 and vascular VERY HIGH simultaneously.",
     target: "APOE E4 · Vascular Health · Memory & Brain · Longevity",
-    note: "Must take with food containing fat. Verify product specifies trans-resveratrol isomer specifically." },
-  { id: "citrulline", time: "meals", label: "Citrulline Malate", dose: "3–6g", form: "Powder", status: "pending", source: "protocol",
+    note: "Must take with food containing fat. Verify product specifies trans-resveratrol isomer. Keep to 250–500mg — your FOXO3 TT longevity variant is partly governed by sirtuin/AMPK signaling, and megadoses aren't better here." },
+  { id: "citrulline", time: "meals", phase: 3, label: "Citrulline Malate", dose: "3–6g", form: "Powder", status: "pending", source: "protocol",
     why: "ENOS GT variant reduces nitric oxide synthase efficiency. Citrulline uses the dietary nitrate → nitrite → NO pathway which completely bypasses the eNOS enzyme — your genetic variant is irrelevant to this route.",
     target: "Vascular Health · Blood Pressure · Exercise Response",
     note: "Best 30–60 min pre-exercise for performance. Can also be taken with any meal for daily vascular support. Avoid antibacterial mouthwash." },
-  { id: "d3k2", time: "meals", label: "Vitamin D3 + K2-MK7", dose: "4000–5000 IU D3 + 100mcg K2", form: "Softgel", status: "pending", source: "protocol",
+  { id: "d3k2", time: "meals", phase: 1, label: "Vitamin D3 + K2-MK7", dose: "4000–5000 IU D3 + 100mcg K2", form: "Softgel", status: "pending", source: "protocol",
     why: "VDR triple variant (Fok1 TT, Bsm1 GA, Taq1 TC) impairs Vitamin D receptor function at three points. The 3000 IU in OwnIt is insufficient. K2-MK7 (MenaQ7) directs calcium into bone rather than soft tissue.",
     target: "Bone Health · Memory & Brain · Vascular Health · Hormone Balance",
-    note: "Take with largest meal. In addition to D3 in OwnIt, not instead. K2 form must be MenaQ7 specifically." },
-  { id: "collagen", time: "meals", label: "Hydrolyzed Collagen + Vit C", dose: "10–15g collagen + 250–500mg Vit C", form: "Powder", status: "pending", source: "protocol",
-    why: "GDF5 TT, VEGFA AA, and MMP3 AG create a connective tissue repair deficit. Timed collagen + Vit C 30–60 min before exercise increases tendon collagen synthesis by ~20% (2019 study).",
+    note: "Take with largest meal. In addition to D3 in OwnIt, not instead. K2 form must be MenaQ7 specifically. Phase 1 foundation — documented-gap correction." },
+  { id: "collagen", time: "meals", phase: 0, label: "Hydrolyzed Collagen + Vit C", dose: "10–15g collagen + 250–500mg Vit C", form: "Powder", status: "pending", source: "protocol",
+    why: "GDF5 TT, VEGFA AA, and COL12A1 AA create a connective tissue repair deficit (all VERY HIGH in your report). Timed collagen + Vit C 30–60 min before exercise increases tendon collagen synthesis by ~20% (2019 study).",
     target: "Collagen & Joints · Injury · Bone Health · Recovery",
-    note: "TIMING CRITICAL — 30–60 min before exercise specifically. Vitamin C is a required cofactor — take it every time." },
-  { id: "creatine", time: "meals", label: "Creatine Monohydrate", dose: "5g", form: "Powder", status: "active", source: "standalone",
+    note: "TIMING CRITICAL — 30–60 min before exercise specifically. Vitamin C is a required cofactor — take it every time. No sequencing sensitivity — can start anytime alongside training." },
+  { id: "creatine", time: "meals", phase: 0, label: "Creatine Monohydrate", dose: "5g", form: "Powder", status: "active", source: "standalone",
     why: "Well-indicated for PPARGC1A AA variant. Creatine supports ATP regeneration in cells with fewer mitochondria — directly compensating for reduced mitochondrial density your genotype creates. Also supports ACTN3 RR power expression.",
     target: "Energy Expenditure · Exercise Response · Power",
-    note: "Timing flexible — consistency matters more than timing for creatine. No loading phase required at 5g/day." },
-  { id: "taurine", time: "meals", label: "Taurine", dose: "1–2g", form: "Powder or capsule", status: "active", source: "standalone",
+    note: "Timing flexible — consistency matters more than timing. No loading phase required at 5g/day. No sequencing sensitivity." },
+  { id: "taurine", time: "meals", phase: 0, label: "Taurine", dose: "1–2g", form: "Powder or capsule", status: "active", source: "standalone",
     why: "Supports cardiovascular function (vascular health VERY HIGH), bile acid conjugation, and mitochondrial membrane integrity. Synergistic with CoQ10 and PQQ for PPARGC1A AA pathway. Emerging longevity data on taurine decline with age.",
     target: "Vascular Health · Mitochondrial Function · Longevity",
-    note: "Can be taken with any meal. Well tolerated. Maintains levels that naturally decline with age." },
+    note: "Can be taken with any meal. Well tolerated. No sequencing sensitivity." },
   // EVENING
-  { id: "magnesium", time: "evening", label: "Magnesium Glycinate", dose: "300–400mg elemental", form: "Capsule", status: "pending", source: "protocol",
+  { id: "magnesium", time: "evening", phase: 1, label: "Magnesium Glycinate", dose: "300–400mg elemental", form: "Capsule", status: "pending", source: "protocol",
     why: "The 30mg in OwnIt is a fraction of therapeutic dose. Magnesium is a cofactor in 300+ reactions including MTHFR enzyme function, COMT catecholamine clearance, bone matrix, and slow-wave sleep. Evening timing supports APOE E4 glymphatic clearance.",
     target: "Mood & Behavior · Methylation · Blood Pressure · Bone Health · Sleep",
-    note: "Pre-bed timing supports slow-wave sleep — your primary APOE E4 glymphatic amyloid clearance window. Glycinate preferred for sleep and tolerability." },
+    note: "Pre-bed timing supports slow-wave sleep — your primary APOE E4 glymphatic amyloid clearance window. Glycinate preferred for sleep and tolerability. Phase 1 foundation." },
 ];
 
 const TIME_GROUPS = [
@@ -96,6 +100,18 @@ const TIME_GROUPS = [
   { id: "meals", label: "With Meals", icon: "◎", sublabel: "Take with food for absorption", color: C.accent },
   { id: "evening", label: "Evening", icon: "◑", sublabel: "Pre-bed — supports sleep quality", color: C.purple },
 ];
+
+const PHASES = [
+  { id: 0, label: "Active Foundation", icon: "●", color: C.accent,
+    sublabel: "Already running — your locked-in base", desc: "OwnIt stack (cell-composition formulated) plus standalones with no sequencing sensitivity. These are your foundation — already active and not changing." },
+  { id: 1, label: "Phase 1 · Foundation", icon: "①", color: C.accentB,
+    sublabel: "Weeks 1–4 · documented-gap correction", desc: "Pure correction of gaps your report names directly — FADS, VDR, methylation. Nothing stimulating, so a clean base to build on. Start these together." },
+  { id: 2, label: "Phase 2 · Clearance", icon: "②", color: C.purple,
+    sublabel: "Weeks 5–8 · GST-null support", desc: "Glutathione system support for your GSTM1 + GSTT1 dual deletion. Added after foundation so you can isolate any GI response. Introduce one at a time." },
+  { id: 3, label: "Phase 3 · Energy & Cognitive", icon: "③", color: C.orange,
+    sublabel: "Weeks 9+ · introduce one at a time", desc: "The compounds most likely to affect sleep or stimulation given your COMT GA slow-clearance. Add one per week, watch your Oura data. Suggested order: NMN → Alpha-GPC → Resveratrol → Citrulline → Lion's Mane." },
+];
+
 
 // ─── Protocol Actions Data ──────────────────────────────────────────────────
 const PROTOCOL_CATEGORIES = [
@@ -177,7 +193,7 @@ const PROTOCOL_CATEGORIES = [
         urgencyColor: C.purple,
         shortDesc: "Three targeted compounds for E4-specific mechanisms — none currently in your stack",
         why: "APOE E4 impairs three specific mechanisms: amyloid clearance from brain tissue, cholesterol redistribution within neurons, and microglial (brain immune cell) activation leading to neuroinflammation. Your current stack addresses systemic inflammation broadly but has no compounds specifically targeting these neural mechanisms. These three additions work on the E4-specific pathways and have the strongest evidence base for E4 carriers specifically.",
-        what: "1. Alpha-GPC 300–600mg/day OR Citicoline (CDP-Choline) 250–500mg/day — crosses blood-brain barrier, supports acetylcholine synthesis. E4 carriers have accelerated neural choline use, making this upgrade from choline bitartrate meaningful.\n\n2. Lion's Mane Mushroom Extract 500–1000mg/day (fruiting body, not mycelium) — stimulates NGF (Nerve Growth Factor), promotes neuronal maintenance and plasticity. Strong evidence for memory & brain VERY HIGH + APOE E4.\n\n3. Trans-Resveratrol 250–500mg/day — activates SIRT1, upregulates BDNF, reduces amyloid aggregation, AND activates eNOS for vascular health. One compound addressing both APOE E4 and your vascular pathway simultaneously.",
+        what: "1. Alpha-GPC 300–600mg/day OR Citicoline (CDP-Choline) 250–500mg/day — crosses blood-brain barrier, supports acetylcholine synthesis. Choline is a named HIGH-impact nutrient pathway for you (PEMT GC reduces endogenous choline synthesis) and APOE E4 accelerates neural choline use — this is a documented dietary requirement, not just brain support.\n\n2. Lion's Mane Mushroom Extract 500–1000mg/day (fruiting body, not mycelium) — stimulates NGF (Nerve Growth Factor), promotes neuronal maintenance and plasticity. Strong evidence for memory & brain VERY HIGH + APOE E4.\n\n3. Trans-Resveratrol 250–500mg/day — activates SIRT1, upregulates BDNF, reduces amyloid aggregation, AND activates eNOS for vascular health. One compound addressing both APOE E4 and your vascular pathway simultaneously.",
         brands: "Alpha-GPC: Jarrow Formulas, NOW Foods. Lion's Mane: Host Defense, Real Mushrooms (fruiting body only). Resveratrol: Thorne ResveraCel, Tru Niagen with Resveratrol",
         timing: "Alpha-GPC and Lion's Mane — morning with food. Resveratrol — with a meal containing fat (significantly improves absorption)",
         note: "These can be added one at a time over 60 days rather than all at once. Suggested order: Alpha-GPC first (highest immediate cognitive relevance), then Resveratrol (dual vascular + brain benefit), then Lion's Mane.",
@@ -236,7 +252,7 @@ const PROTOCOL_CATEGORIES = [
         urgency: "SOON",
         urgencyColor: C.orange,
         shortDesc: "Standard LDL-C is inadequate for APOE E4 carriers — particle number is what matters",
-        why: "APOE E4 impairs LDL particle clearance from circulation. Standard lipid panels measure LDL cholesterol content (LDL-C), but it is the number of LDL particles (measured by ApoB) that determines cardiovascular risk — a particle can cause damage regardless of how much cholesterol it carries. You may have normal LDL-C but elevated particle number. ApoB is now considered the most predictive cardiovascular risk marker by longevity medicine practitioners, and is particularly critical for E4 carriers.",
+        why: "Two independent genetic mechanisms make ApoB the right cardiovascular marker for you. First, APOE E4 impairs LDL particle clearance from circulation. Second, your CETP GA variants (×2) alter the exchange of cholesterol between HDL and LDL particles. Standard lipid panels measure LDL cholesterol content (LDL-C), but it is the number of LDL particles (measured by ApoB) that determines cardiovascular risk — a particle can cause damage regardless of how much cholesterol it carries. With your cholesterol pathway scored HIGH, you may have normal LDL-C but elevated particle number. ApoB is now considered the most predictive cardiovascular risk marker by longevity medicine practitioners.",
         what: "Request ApoB, ApoA1, and hsCRP alongside standard lipid panel (total cholesterol, LDL-C, HDL-C, triglycerides). These are standard lab requisition items at Dynacare.",
         brands: "Dynacare or LifeLabs — standard requisition",
         timing: "Fasted (12 hours) for accurate triglyceride and LDL readings",
@@ -269,8 +285,8 @@ const PROTOCOL_CATEGORIES = [
         title: "Begin BPC-157 + TB-500 Foundation Cycle",
         urgency: "SOON",
         urgencyColor: C.orange,
-        shortDesc: "Your genetic profile specifically validates this stack — VEGFA AA + MMP3 AG are direct targets",
-        why: "BPC-157's primary mechanism — upregulating VEGF receptor expression and promoting angiogenesis in tendons — directly compensates for your VEGFA AA variant which reduces native VEGF production. TB-500 addresses the MMP3 AG breakdown-dominant collagen balance by promoting structural tissue repair. Your injury pathway is VERY HIGH, recovery is VERY HIGH, and collagen & joints is VERY HIGH — this stack addresses all three simultaneously. This is one of the clearest genetic-to-peptide alignments in your entire profile.",
+        shortDesc: "Your genetic profile specifically validates this stack — VEGFA AA is a direct target",
+        why: "BPC-157's primary mechanism — upregulating VEGF receptor expression and promoting angiogenesis in tendons — directly compensates for your VEGFA AA variant which reduces native tendon vascularization (VEGFA AA is starred VERY HIGH in your report). TB-500 promotes structural tissue repair and cell migration, supporting the GDF5 TT and COL12A1 AA connective-tissue drivers behind your collagen pathway. Your injury pathway is VERY HIGH, recovery is VERY HIGH, and collagen & joints is VERY HIGH — this stack addresses all three. This is one of the clearest genetic-to-peptide alignments in your entire profile.",
         what: "BPC-157: 250–300mcg/day subcutaneous or oral for first 2 weeks, then 500mcg if well tolerated. TB-500: 2.5mg twice weekly subcutaneous. Run together for 8-week on-cycle.",
         brands: "Quality-tested peptides from your existing sourcing approach — verify purity certificates (HPLC analysis) before use",
         timing: "BPC-157: morning on empty stomach if oral, anytime if subcutaneous. TB-500: consistent day and time each week (e.g. Monday and Thursday)",
@@ -287,7 +303,7 @@ const PROTOCOL_CATEGORIES = [
         what: "100–200mcg subcutaneous, 30–60 minutes before sleep. Start at 100mcg for first 2 weeks.",
         brands: "Quality-tested peptides — same sourcing as BPC-157/TB-500",
         timing: "30–60 min before sleep, after a 2–3 hour fast. Insulin from recent eating blunts GH response significantly.",
-        note: "APOE E4 consideration: Ipamorelin produces physiological GH pulses, not supraphysiological levels. Conservative dosing (100–200mcg) is appropriate — do not escalate beyond 200mcg without knowing your IGF-1 response. Monitor slow-wave sleep % on Oura as a proxy for GH secretion quality.",
+        note: "Two reasons to keep dosing physiological (100–200mcg), not aggressive: (1) APOE E4 — Ipamorelin produces physiological GH pulses, not supraphysiological levels. (2) Your FOXO3 TT longevity variant — FOXO3's protective, stress-resistance and autophagy benefits are partly suppressed by chronically elevated GH/IGF-1 signaling. Keeping GH in the physiological range preserves this genetic asset rather than working against it. Do not escalate beyond 200mcg without knowing your IGF-1 response. Monitor slow-wave sleep % on Oura as a proxy for GH secretion quality.",
         pathways: ["Energy Expenditure", "Recovery", "Collagen & Joints", "APOE E4"],
       },
       {
@@ -330,7 +346,7 @@ const PROTOCOL_CATEGORIES = [
         urgency: "NOW",
         urgencyColor: C.red,
         shortDesc: "Timing is critical — 30–60 min before exercise is 20% more effective for tendon synthesis",
-        why: "Your collagen & joints pathway is VERY HIGH driven by GDF5 TT (reduced cartilage resilience), VEGFA AA (impaired tendon vascularization), and MMP3 AG (increased connective tissue breakdown). Hydrolyzed collagen peptides provide the amino acid substrate — glycine, proline, hydroxyproline — that fibroblasts need to synthesize new collagen. A 2019 study specifically showed that taking collagen peptides with Vitamin C 30–60 minutes before exercise increased collagen synthesis markers in tendons by approximately 20% compared to other timing. For your genotype this is not a marginal optimization.",
+        why: "Your collagen & joints pathway is VERY HIGH driven by GDF5 TT (reduced cartilage resilience), VEGFA AA (impaired tendon vascularization), and COL12A1 AA (altered collagen fibril organization) — all three starred or VERY HIGH in your report. Hydrolyzed collagen peptides provide the amino acid substrate — glycine, proline, hydroxyproline — that fibroblasts need to synthesize new collagen. A 2019 study specifically showed that taking collagen peptides with Vitamin C 30–60 minutes before exercise increased collagen synthesis markers in tendons by approximately 20% compared to other timing. For your genotype this is not a marginal optimization.",
         what: "10–15g hydrolyzed collagen peptides + 250–500mg Vitamin C taken 30–60 minutes before exercise. Type I + III collagen blend is most relevant for tendons and ligaments.",
         brands: "Great Lakes Wellness, Vital Proteins, Further Food. Any unflavored hydrolyzed collagen is appropriate — avoid gelatin (different processing).",
         timing: "30–60 min before exercise — this is not arbitrary, this is the specific window when fibroblasts are primed to incorporate collagen substrate",
@@ -342,8 +358,8 @@ const PROTOCOL_CATEGORIES = [
         title: "Formalize Eating Window — Earlier Cutoff",
         urgency: "SOON",
         urgencyColor: C.orange,
-        shortDesc: "CLOCK TT variant reduces metabolic efficiency of late-day calories",
-        why: "Your CLOCK TT (3111) variant affects circadian metabolic timing — it is associated with reduced metabolic processing efficiency for calories consumed later in the day. Combined with your PPARGC1A AA (fewer mitochondria, less energy burning capacity) and UCP2/UCP3 variants (reduced thermogenic uncoupling), late eating hits you harder metabolically than it does most people. For APOE E4 specifically, intermittent fasting also upregulates autophagy (cellular cleanup including amyloid precursor clearance), increases BDNF, and activates glymphatic pathways — making this one of the highest-leverage lifestyle interventions for your specific genotype combination.",
+        shortDesc: "APOE E4 + PPARGC1A AA make an earlier eating window genuinely high-leverage for you",
+        why: "Your earlier eating window is driven by APOE E4 and your energy genes — NOT CLOCK (your CLOCK 3111 is TT, scored NO IMPACT in your report, so ignore any 'circadian variant' rationale). The real basis: APOE E4 carriers get outsized benefit from intermittent fasting, which upregulates autophagy (cellular cleanup including amyloid precursor clearance), increases BDNF, and activates glymphatic drainage during sleep. Layer that on PPARGC1A AA (fewer mitochondria, slower fuel-burning) and ADRB2 GG×2 (less efficient fat mobilization, both VERY HIGH), and a compressed earlier window helps your weight-loss-resistance and adipogenesis pathways. Note: your UCP2 AA and UCP3 CT are actually PROTECTIVE — working in your favor — so don't treat thermogenesis as a deficit to fight.",
         what: "16:8 intermittent fasting with eating window ending by 7–8pm. Front-load calories toward earlier in the day.",
         brands: "N/A — dietary practice",
         timing: "Consistent daily eating window. The Ipamorelin pre-sleep injection requires a 2–3 hour food-free window anyway — an earlier eating cutoff supports this automatically.",
@@ -477,6 +493,7 @@ export default function App() {
   const [expandedAction, setExpandedAction] = useState(null);
   const [expandedSupp, setExpandedSupp] = useState(null);
   const [suppViewDate, setSuppViewDate] = useState(todayStr());
+  const [suppView, setSuppView] = useState("phase");
 
   useEffect(() => {
     try {
@@ -713,18 +730,22 @@ export default function App() {
 
             {/* ── GENETIC FLAGS ── */}
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Genetic Risk Flags</div>
+              <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Key Genetic Markers</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {[
-                  { gene: "APOE E3/E4", label: "Neuroinflammation · Amyloid clearance · Cholesterol transport", color: C.red, icon: "🧠" },
-                  { gene: "MTHFR 677 TT", label: "Homozygous · ~70% methylation enzyme reduction", color: C.orange, icon: "⚡" },
-                  { gene: "GSTM1 DEL", label: "Complete deletion · Zero glutathione S-transferase M1", color: C.purple, icon: "🛡" },
+                  { gene: "APOE E3/E4", label: "Neuroinflammation · Amyloid clearance · Cholesterol transport", color: C.red, icon: "🧠", tag: "RISK" },
+                  { gene: "MTHFR 677 TT", label: "Homozygous · ~70% methylation enzyme reduction", color: C.orange, icon: "⚡", tag: "RISK" },
+                  { gene: "GSTM1 + GSTT1 DEL", label: "Both deleted · Reduced toxin clearance capacity", color: C.purple, icon: "🛡", tag: "RISK" },
+                  { gene: "FOXO3 TT", label: "Longevity-associated variant · Stress resistance asset", color: C.accent, icon: "🧬", tag: "PROTECTIVE" },
                 ].map(f => (
                   <div key={f.gene} style={{ background: C.surface, border: `1px solid ${f.color}30`, borderRadius: 12, padding: "12px 14px", display: "flex", alignItems: "center", gap: 12 }}>
                     <span style={{ fontSize: 18 }}>{f.icon}</span>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: f.color, letterSpacing: "0.04em" }}>{f.gene}</div>
-                      <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{f.label}</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: f.color, letterSpacing: "0.04em" }}>{f.gene}</span>
+                        <span style={{ fontSize: 8, padding: "1px 6px", borderRadius: 8, background: f.color + "20", color: f.color, border: `1px solid ${f.color}40`, letterSpacing: "0.08em", fontWeight: 700 }}>{f.tag}</span>
+                      </div>
+                      <div style={{ fontSize: 11, color: C.muted, marginTop: 3 }}>{f.label}</div>
                     </div>
                   </div>
                 ))}
@@ -846,7 +867,60 @@ export default function App() {
               })()}
             </div>
 
-            {TIME_GROUPS.map(group => {
+            {/* View toggle */}
+            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+              {[["phase", "By Phase"], ["time", "By Time of Day"]].map(([v, label]) => (
+                <button key={v} onClick={() => setSuppView(v)}
+                  style={{ flex: 1, background: suppView === v ? C.accent + "20" : "#0a0e1a", border: `1px solid ${suppView === v ? C.accent + "60" : C.border}`, borderRadius: 10, padding: "10px 4px", cursor: "pointer", fontSize: 12, fontWeight: 700, color: suppView === v ? C.accent : C.muted, letterSpacing: "0.03em" }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {suppView === "phase" && PHASES.map(phase => {
+              const phaseSupps = SUPPLEMENTS.filter(s => s.phase === phase.id);
+              if (phaseSupps.length === 0) return null;
+              const activeSupps = phaseSupps.filter(s => isSuppActive(s));
+              const pendingSupps = phaseSupps.filter(s => !isSuppActive(s));
+              return (
+                <div key={phase.id} style={{ marginBottom: 28 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 10, background: phase.color + "18", border: `1px solid ${phase.color}40`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <span style={{ fontSize: 17, color: phase.color, fontWeight: 800 }}>{phase.icon}</span>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: phase.color, letterSpacing: "-0.01em" }}>{phase.label}</div>
+                      <div style={{ fontSize: 11, color: C.muted }}>{phase.sublabel}</div>
+                    </div>
+                    <div style={{ fontSize: 11, color: C.muted, flexShrink: 0 }}>{activeSupps.length}/{phaseSupps.length} active</div>
+                  </div>
+                  <div style={{ background: phase.color + "0c", border: `1px solid ${phase.color}22`, borderRadius: 10, padding: "10px 12px", marginBottom: 12 }}>
+                    <div style={{ fontSize: 11, color: C.subtle, lineHeight: 1.6 }}>{phase.desc}</div>
+                  </div>
+                  {activeSupps.map(supp => (
+                    <SuppCard key={supp.id} supp={supp} active accent={phase.color}
+                      logged={isSuppLogged(supp.id, suppViewDate)} streak={getSuppStreak(supp.id)}
+                      isExp={expandedSupp === supp.id}
+                      onToggleLog={() => toggleSuppLog(supp.id, suppViewDate)}
+                      onExpand={() => setExpandedSupp(expandedSupp === supp.id ? null : supp.id)}
+                      onDeactivate={() => deactivateSupp(supp.id)} />
+                  ))}
+                  {pendingSupps.length > 0 && (
+                    <div style={{ marginTop: activeSupps.length > 0 ? 8 : 0 }}>
+                      {activeSupps.length > 0 && <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Not yet started</div>}
+                      {pendingSupps.map(supp => (
+                        <SuppCard key={supp.id} supp={supp} active={false} accent={phase.color}
+                          isExp={expandedSupp === supp.id}
+                          onExpand={() => setExpandedSupp(expandedSupp === supp.id ? null : supp.id)}
+                          onActivate={() => activateSupp(supp.id)} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {suppView === "time" && TIME_GROUPS.map(group => {
               const groupSupps = SUPPLEMENTS.filter(s => s.time === group.id);
               const activeSupps = groupSupps.filter(s => isSuppActive(s));
               const pendingSupps = groupSupps.filter(s => !isSuppActive(s));
@@ -863,102 +937,23 @@ export default function App() {
                       {activeSupps.filter(s => isSuppLogged(s.id, suppViewDate)).length}/{activeSupps.length} taken
                     </div>
                   </div>
-
-                  {activeSupps.map(supp => {
-                    const logged = isSuppLogged(supp.id, suppViewDate);
-                    const streak = getSuppStreak(supp.id);
-                    const isExp = expandedSupp === supp.id;
-                    const srcColor = supp.source === "ownit" ? C.accentB : supp.source === "standalone" ? C.pink : C.accent;
-                    const srcLabel = supp.source === "ownit" ? "OwnIt" : supp.source === "standalone" ? "Standalone" : "Protocol";
-                    return (
-                      <div key={supp.id} style={{ background: C.surface, border: `1px solid ${logged ? C.accent + "40" : C.border}`, borderRadius: 14, marginBottom: 10, overflow: "hidden" }}>
-                        <div style={{ padding: "14px 14px 0" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                            <button onClick={() => toggleSuppLog(supp.id, suppViewDate)}
-                              style={{ width: 28, height: 28, borderRadius: 8, border: `2px solid ${logged ? C.accent : C.muted}`, background: logged ? C.accent + "25" : "transparent", flexShrink: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              {logged && <span style={{ color: C.accent, fontSize: 14, fontWeight: 900 }}>✓</span>}
-                            </button>
-                            <div style={{ flex: 1 }}>
-                              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                                <span style={{ fontSize: 14, fontWeight: 700, color: logged ? C.muted : C.text, textDecoration: logged ? "line-through" : "none" }}>{supp.label}</span>
-                                <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: srcColor + "20", color: srcColor, border: `1px solid ${srcColor}40`, letterSpacing: "0.06em" }}>{srcLabel}</span>
-                              </div>
-                              <div style={{ fontSize: 12, color: C.muted, marginTop: 3 }}>{supp.dose} · {supp.form}</div>
-                            </div>
-                            {streak > 0 && <div style={{ textAlign: "center", flexShrink: 0 }}>
-                              <div style={{ fontSize: 16 }}>🔥</div>
-                              <div style={{ fontSize: 9, color: C.orange, fontWeight: 700 }}>{streak}d</div>
-                            </div>}
-                          </div>
-                          <div onClick={() => setExpandedSupp(isExp ? null : supp.id)}
-                            style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
-                            <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
-                            <span style={{ color: C.muted, fontSize: 11, transform: isExp ? "rotate(180deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>▼</span>
-                          </div>
-                        </div>
-                        {isExp && (
-                          <div style={{ borderTop: `1px solid ${C.border}`, background: "#0a0e1a", padding: 14 }}>
-                            <div style={{ fontSize: 10, color: group.color, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Why In Your Stack</div>
-                            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.7, marginBottom: 12 }}>{supp.why}</div>
-                            <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Targets</div>
-                            <div style={{ fontSize: 12, color: C.text, marginBottom: 12 }}>{supp.target}</div>
-                            {supp.note && <div style={{ background: C.orange + "10", border: `1px solid ${C.orange}30`, borderRadius: 8, padding: "10px 12px" }}>
-                              <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700, marginBottom: 4 }}>⚑ Note</div>
-                              <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.note}</div>
-                            </div>}
-                            {supp.status !== "active" && <button style={{ background: "#1a2038", color: C.red, border: `1px solid ${C.red}40`, borderRadius: 8, padding: "9px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", width: "100%", marginTop: 12 }} onClick={() => deactivateSupp(supp.id)}>Set back to pending</button>}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-
+                  {activeSupps.map(supp => (
+                    <SuppCard key={supp.id} supp={supp} active accent={group.color}
+                      logged={isSuppLogged(supp.id, suppViewDate)} streak={getSuppStreak(supp.id)}
+                      isExp={expandedSupp === supp.id}
+                      onToggleLog={() => toggleSuppLog(supp.id, suppViewDate)}
+                      onExpand={() => setExpandedSupp(expandedSupp === supp.id ? null : supp.id)}
+                      onDeactivate={() => deactivateSupp(supp.id)} />
+                  ))}
                   {pendingSupps.length > 0 && (
                     <div style={{ marginTop: 8 }}>
                       <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Pending — activate when purchased</div>
-                      {pendingSupps.map(supp => {
-                        const isExp = expandedSupp === supp.id;
-                        return (
-                          <div key={supp.id} style={{ background: "#0a0c14", border: `1px dashed ${C.border}`, borderRadius: 14, marginBottom: 8, overflow: "hidden", opacity: 0.78 }}>
-                            <div style={{ padding: "12px 14px 0" }}>
-                              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                                <div style={{ width: 28, height: 28, borderRadius: 8, border: `2px dashed ${C.muted}`, flexShrink: 0 }} />
-                                <div style={{ flex: 1 }}>
-                                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                                    <span style={{ fontSize: 14, fontWeight: 600, color: C.muted }}>{supp.label}</span>
-                                    <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: C.muted + "20", color: C.muted, border: `1px solid ${C.muted}40`, letterSpacing: "0.06em" }}>PENDING</span>
-                                  </div>
-                                  <div style={{ fontSize: 12, color: C.muted, marginTop: 3, opacity: 0.7 }}>{supp.dose} · {supp.form}</div>
-                                </div>
-                                <button onClick={() => activateSupp(supp.id)}
-                                  style={{ background: C.accent + "15", border: `1px solid ${C.accent}40`, borderRadius: 8, color: C.accent, padding: "6px 12px", cursor: "pointer", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
-                                  Activate
-                                </button>
-                              </div>
-                              <div onClick={() => setExpandedSupp(isExp ? null : supp.id)}
-                                style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
-                                <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
-                                <span style={{ color: C.muted, fontSize: 11, transform: isExp ? "rotate(180deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>▼</span>
-                              </div>
-                            </div>
-                            {isExp && (
-                              <div style={{ borderTop: `1px solid ${C.border}`, background: "#070910", padding: 14 }}>
-                                <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Why This Belongs In Your Stack</div>
-                                <div style={{ fontSize: 12, color: C.text, lineHeight: 1.7, marginBottom: 12 }}>{supp.why}</div>
-                                <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Targets</div>
-                                <div style={{ fontSize: 12, color: C.text, marginBottom: 12 }}>{supp.target}</div>
-                                {supp.note && <div style={{ background: C.orange + "10", border: `1px solid ${C.orange}30`, borderRadius: 8, padding: "10px 12px", marginBottom: 12 }}>
-                                  <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700, marginBottom: 4 }}>⚑ Note</div>
-                                  <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.note}</div>
-                                </div>}
-                                <button style={{ background: `linear-gradient(135deg,${C.accent},${C.accentB})`, color: "#000", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 14, fontWeight: 700, cursor: "pointer", width: "100%" }} onClick={() => activateSupp(supp.id)}>
-                                  ✓ I've purchased this — start tracking
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                      {pendingSupps.map(supp => (
+                        <SuppCard key={supp.id} supp={supp} active={false} accent={group.color}
+                          isExp={expandedSupp === supp.id}
+                          onExpand={() => setExpandedSupp(expandedSupp === supp.id ? null : supp.id)}
+                          onActivate={() => activateSupp(supp.id)} />
+                      ))}
                     </div>
                   )}
                 </div>
@@ -1359,6 +1354,94 @@ function PDFResultsPanel({ results, onImport, onDismiss }) {
 }
 
 // ── Small components ──────────────────────────────────────────────────────
+function SuppCard({ supp, accent, logged, streak, isExp, onToggleLog, onExpand, onActivate, onDeactivate, active }) {
+  const srcColor = supp.source === "ownit" ? C.accentB : supp.source === "standalone" ? C.pink : C.accent;
+  const srcLabel = supp.source === "ownit" ? "OwnIt" : supp.source === "standalone" ? "Standalone" : "Protocol";
+  if (active) {
+    return (
+      <div style={{ background: C.surface, border: `1px solid ${logged ? C.accent + "40" : C.border}`, borderRadius: 14, marginBottom: 10, overflow: "hidden" }}>
+        <div style={{ padding: "14px 14px 0" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+            <button onClick={onToggleLog}
+              style={{ width: 28, height: 28, borderRadius: 8, border: `2px solid ${logged ? C.accent : C.muted}`, background: logged ? C.accent + "25" : "transparent", flexShrink: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              {logged && <span style={{ color: C.accent, fontSize: 14, fontWeight: 900 }}>✓</span>}
+            </button>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: logged ? C.muted : C.text, textDecoration: logged ? "line-through" : "none" }}>{supp.label}</span>
+                <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: srcColor + "20", color: srcColor, border: `1px solid ${srcColor}40`, letterSpacing: "0.06em" }}>{srcLabel}</span>
+              </div>
+              <div style={{ fontSize: 12, color: C.muted, marginTop: 3 }}>{supp.dose} · {supp.form}</div>
+            </div>
+            {streak > 0 && <div style={{ textAlign: "center", flexShrink: 0 }}>
+              <div style={{ fontSize: 16 }}>🔥</div>
+              <div style={{ fontSize: 9, color: C.orange, fontWeight: 700 }}>{streak}d</div>
+            </div>}
+          </div>
+          <div onClick={onExpand}
+            style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
+            <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
+            <span style={{ color: C.muted, fontSize: 11, transform: isExp ? "rotate(180deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>▼</span>
+          </div>
+        </div>
+        {isExp && (
+          <div style={{ borderTop: `1px solid ${C.border}`, background: "#0a0e1a", padding: 14 }}>
+            <div style={{ fontSize: 10, color: accent, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Why In Your Stack</div>
+            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.7, marginBottom: 12 }}>{supp.why}</div>
+            <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Targets</div>
+            <div style={{ fontSize: 12, color: C.text, marginBottom: 12 }}>{supp.target}</div>
+            {supp.note && <div style={{ background: C.orange + "10", border: `1px solid ${C.orange}30`, borderRadius: 8, padding: "10px 12px" }}>
+              <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700, marginBottom: 4 }}>⚑ Note</div>
+              <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.note}</div>
+            </div>}
+            {supp.status !== "active" && <button style={{ background: "#1a2038", color: C.red, border: `1px solid ${C.red}40`, borderRadius: 8, padding: "9px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", width: "100%", marginTop: 12 }} onClick={onDeactivate}>Set back to pending</button>}
+          </div>
+        )}
+      </div>
+    );
+  }
+  return (
+    <div style={{ background: "#0a0c14", border: `1px dashed ${C.border}`, borderRadius: 14, marginBottom: 8, overflow: "hidden", opacity: 0.78 }}>
+      <div style={{ padding: "12px 14px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, border: `2px dashed ${C.muted}`, flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: C.muted }}>{supp.label}</span>
+              <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: C.muted + "20", color: C.muted, border: `1px solid ${C.muted}40`, letterSpacing: "0.06em" }}>PENDING</span>
+            </div>
+            <div style={{ fontSize: 12, color: C.muted, marginTop: 3, opacity: 0.7 }}>{supp.dose} · {supp.form}</div>
+          </div>
+          <button onClick={onActivate}
+            style={{ background: C.accent + "15", border: `1px solid ${C.accent}40`, borderRadius: 8, color: C.accent, padding: "6px 12px", cursor: "pointer", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+            Activate
+          </button>
+        </div>
+        <div onClick={onExpand}
+          style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
+          <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
+          <span style={{ color: C.muted, fontSize: 11, transform: isExp ? "rotate(180deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>▼</span>
+        </div>
+      </div>
+      {isExp && (
+        <div style={{ borderTop: `1px solid ${C.border}`, background: "#070910", padding: 14 }}>
+          <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Why This Belongs In Your Stack</div>
+          <div style={{ fontSize: 12, color: C.text, lineHeight: 1.7, marginBottom: 12 }}>{supp.why}</div>
+          <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Targets</div>
+          <div style={{ fontSize: 12, color: C.text, marginBottom: 12 }}>{supp.target}</div>
+          {supp.note && <div style={{ background: C.orange + "10", border: `1px solid ${C.orange}30`, borderRadius: 8, padding: "10px 12px", marginBottom: 12 }}>
+            <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700, marginBottom: 4 }}>⚑ Note</div>
+            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.note}</div>
+          </div>}
+          <button style={{ background: `linear-gradient(135deg,${C.accent},${C.accentB})`, color: "#000", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 14, fontWeight: 700, cursor: "pointer", width: "100%" }} onClick={onActivate}>
+            ✓ I've purchased this — start tracking
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function StatCard({ icon, label, val, sub, color }) {
   return (
     <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 16 }}>
