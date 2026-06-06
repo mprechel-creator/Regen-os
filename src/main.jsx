@@ -12,6 +12,8 @@ const defaultData = {
   biomarkers: [],
   setupComplete: false,
   protocolActions: {},
+  suppLogs: {},
+  suppActive: {},
 };
 
 // ─── Constants ─────────────────────────────────────────────────────────────
@@ -29,6 +31,71 @@ const C = {
   accentB: "#3d9eff", purple: "#a78bfa", pink: "#f472b6", orange: "#f0a500",
   red: "#ff6b6b", text: "#e2e8f0", muted: "#4a5568", subtle: "#8892a4",
 };
+
+// ─── Supplement Stack ──────────────────────────────────────────────────────
+const SUPPLEMENTS = [
+  // MORNING
+  { id: "nmn", time: "morning", label: "NMN", dose: "250–500mg", form: "Capsule", status: "pending", source: "protocol",
+    why: "Addresses PPARGC1A AA mitochondrial biogenesis impairment upstream. NAD+ activates SIRT1 → PGC-1 alpha — the exact signaling pathway your variant reduces. Works upstream of CoQ10 and PQQ already in your OwnIt stack.",
+    target: "Energy Expenditure · Mitochondrial Function · Adipogenesis",
+    note: "Take on empty stomach or light meal. Morning timing supports circadian NAD+ rhythm." },
+  { id: "alphagpc", time: "morning", label: "Alpha-GPC", dose: "300–600mg", form: "Capsule", status: "pending", source: "protocol",
+    why: "APOE E4 carriers have accelerated neural choline use. Alpha-GPC crosses the blood-brain barrier and directly supports acetylcholine synthesis — better CNS delivery than choline bitartrate in your OwnIt stack.",
+    target: "APOE E4 · Memory & Brain · Mood & Behavior",
+    note: "Start at 300mg. Some people find higher doses (600mg+) cause mild headache — adjust to tolerance." },
+  { id: "lionsmane", time: "morning", label: "Lion's Mane Extract", dose: "500–1000mg", form: "Capsule (fruiting body)", status: "pending", source: "protocol",
+    why: "Stimulates NGF (Nerve Growth Factor), promoting neuronal maintenance and plasticity. Directly relevant for memory & brain VERY HIGH + APOE E4 status.",
+    target: "Memory & Brain · APOE E4 · Cognitive Function",
+    note: "Must be fruiting body extract — not mycelium on grain. Brands: Host Defense, Real Mushrooms." },
+  { id: "glutathione", time: "morning", label: "S-Acetyl Glutathione", dose: "200mg", form: "Capsule", status: "pending", source: "protocol",
+    why: "GSTM1 DEL is a complete deletion — zero GSTM1 enzyme. S-acetyl form survives digestion and enters cells intact, unlike reduced glutathione in OwnIt which is largely destroyed before absorption.",
+    target: "Oxidative Stress · Detoxification · Recovery",
+    note: "Add alongside OwnIt — NAC in your stack still contributes to endogenous glutathione. These work together." },
+  // WITH MEALS
+  { id: "ownit", time: "meals", label: "OwnIt Stack", dose: "Per label", form: "Capsule blend", status: "active", source: "ownit",
+    why: "Core cellular nutrition stack based on Cellular Micronutrient Analysis. Contains 5-MTHF and methylcobalamin in active forms required by MTHFR 677 TT homozygous genotype. Also includes CoQ10, PQQ, curcumin, boswellia, EGCG, zinc, selenium, NAC, alpha-lipoic acid, and B vitamins in active forms.",
+    target: "Methylation · Oxidative Stress · Inflammation · Mitochondrial Function",
+    note: "Take with food — fat-soluble components require dietary fat for absorption." },
+  { id: "omega3", time: "meals", label: "EPA+DHA Omega-3", dose: "2–3g EPA+DHA combined", form: "Softgel (triglyceride form)", status: "pending", source: "protocol",
+    why: "FADS1 GT + FADS2 CG variants mean you convert plant-based ALA to EPA/DHA poorly. Combined with APOE E4 neuroinflammation risk, marine-source omega-3 is essential — not optional. E4 carriers show greater cognitive benefit from omega-3 specifically.",
+    target: "Inflammation · APOE E4 · Vascular Health · Mood & Behavior",
+    note: "Triglyceride form (rTG) has ~70% better bioavailability. Do not rely on flaxseed — FADS variants impair ALA conversion." },
+  { id: "resveratrol", time: "meals", label: "Trans-Resveratrol", dose: "250–500mg", form: "Capsule", status: "pending", source: "protocol",
+    why: "Activates SIRT1, upregulates BDNF, reduces amyloid aggregation (APOE E4 mechanism), and activates eNOS for vascular health (ENOS GT variant). One compound addressing both APOE E4 and vascular VERY HIGH simultaneously.",
+    target: "APOE E4 · Vascular Health · Memory & Brain · Longevity",
+    note: "Must take with food containing fat. Verify product specifies trans-resveratrol isomer specifically." },
+  { id: "citrulline", time: "meals", label: "Citrulline Malate", dose: "3–6g", form: "Powder", status: "pending", source: "protocol",
+    why: "ENOS GT variant reduces nitric oxide synthase efficiency. Citrulline uses the dietary nitrate → nitrite → NO pathway which completely bypasses the eNOS enzyme — your genetic variant is irrelevant to this route.",
+    target: "Vascular Health · Blood Pressure · Exercise Response",
+    note: "Best 30–60 min pre-exercise for performance. Can also be taken with any meal for daily vascular support. Avoid antibacterial mouthwash." },
+  { id: "d3k2", time: "meals", label: "Vitamin D3 + K2-MK7", dose: "4000–5000 IU D3 + 100mcg K2", form: "Softgel", status: "pending", source: "protocol",
+    why: "VDR triple variant (Fok1 TT, Bsm1 GA, Taq1 TC) impairs Vitamin D receptor function at three points. The 3000 IU in OwnIt is insufficient. K2-MK7 (MenaQ7) directs calcium into bone rather than soft tissue.",
+    target: "Bone Health · Memory & Brain · Vascular Health · Hormone Balance",
+    note: "Take with largest meal. In addition to D3 in OwnIt, not instead. K2 form must be MenaQ7 specifically." },
+  { id: "collagen", time: "meals", label: "Hydrolyzed Collagen + Vit C", dose: "10–15g collagen + 250–500mg Vit C", form: "Powder", status: "pending", source: "protocol",
+    why: "GDF5 TT, VEGFA AA, and MMP3 AG create a connective tissue repair deficit. Timed collagen + Vit C 30–60 min before exercise increases tendon collagen synthesis by ~20% (2019 study).",
+    target: "Collagen & Joints · Injury · Bone Health · Recovery",
+    note: "TIMING CRITICAL — 30–60 min before exercise specifically. Vitamin C is a required cofactor — take it every time." },
+  { id: "creatine", time: "meals", label: "Creatine Monohydrate", dose: "5g", form: "Powder", status: "active", source: "standalone",
+    why: "Well-indicated for PPARGC1A AA variant. Creatine supports ATP regeneration in cells with fewer mitochondria — directly compensating for reduced mitochondrial density your genotype creates. Also supports ACTN3 RR power expression.",
+    target: "Energy Expenditure · Exercise Response · Power",
+    note: "Timing flexible — consistency matters more than timing for creatine. No loading phase required at 5g/day." },
+  { id: "taurine", time: "meals", label: "Taurine", dose: "1–2g", form: "Powder or capsule", status: "active", source: "standalone",
+    why: "Supports cardiovascular function (vascular health VERY HIGH), bile acid conjugation, and mitochondrial membrane integrity. Synergistic with CoQ10 and PQQ for PPARGC1A AA pathway. Emerging longevity data on taurine decline with age.",
+    target: "Vascular Health · Mitochondrial Function · Longevity",
+    note: "Can be taken with any meal. Well tolerated. Maintains levels that naturally decline with age." },
+  // EVENING
+  { id: "magnesium", time: "evening", label: "Magnesium Glycinate", dose: "300–400mg elemental", form: "Capsule", status: "pending", source: "protocol",
+    why: "The 30mg in OwnIt is a fraction of therapeutic dose. Magnesium is a cofactor in 300+ reactions including MTHFR enzyme function, COMT catecholamine clearance, bone matrix, and slow-wave sleep. Evening timing supports APOE E4 glymphatic clearance.",
+    target: "Mood & Behavior · Methylation · Blood Pressure · Bone Health · Sleep",
+    note: "Pre-bed timing supports slow-wave sleep — your primary APOE E4 glymphatic amyloid clearance window. Glycinate preferred for sleep and tolerability." },
+];
+
+const TIME_GROUPS = [
+  { id: "morning", label: "Morning", icon: "☀", sublabel: "Empty stomach or light meal", color: C.orange },
+  { id: "meals", label: "With Meals", icon: "◎", sublabel: "Take with food for absorption", color: C.accent },
+  { id: "evening", label: "Evening", icon: "◑", sublabel: "Pre-bed — supports sleep quality", color: C.purple },
+];
 
 // ─── Protocol Actions Data ──────────────────────────────────────────────────
 const PROTOCOL_CATEGORIES = [
@@ -408,6 +475,8 @@ export default function App() {
   // Protocol tab state
   const [activeCategory, setActiveCategory] = useState("supplements");
   const [expandedAction, setExpandedAction] = useState(null);
+  const [expandedSupp, setExpandedSupp] = useState(null);
+  const [suppViewDate, setSuppViewDate] = useState(todayStr());
 
   useEffect(() => {
     try {
@@ -415,6 +484,8 @@ export default function App() {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (!parsed.protocolActions) parsed.protocolActions = {};
+        if (!parsed.suppLogs) parsed.suppLogs = {};
+        if (!parsed.suppActive) parsed.suppActive = {};
         setData(parsed);
       }
     } catch {}
@@ -443,6 +514,24 @@ export default function App() {
       d.protocolActions[actionId] = !d.protocolActions[actionId];
     });
   };
+
+  const isSuppActive = (supp) => supp.status === "active" || !!data.suppActive?.[supp.id];
+  const isSuppLogged = (suppId, dateStr) => !!data.suppLogs?.[dateStr]?.[suppId];
+  const toggleSuppLog = (suppId, dateStr) => update(d => {
+    if (!d.suppLogs) d.suppLogs = {};
+    if (!d.suppLogs[dateStr]) d.suppLogs[dateStr] = {};
+    d.suppLogs[dateStr][suppId] = !d.suppLogs[dateStr][suppId];
+  });
+  const activateSupp = (suppId) => { update(d => { if (!d.suppActive) d.suppActive = {}; d.suppActive[suppId] = true; }); toast$("Activated — tracking started!"); };
+  const deactivateSupp = (suppId) => { update(d => { if (d.suppActive) delete d.suppActive[suppId]; }); toast$("Set back to pending"); };
+  const getSuppStreak = (suppId) => {
+    let streak = 0; let d = new Date();
+    while (true) { const ds = d.toISOString().split("T")[0]; if (data.suppLogs?.[ds]?.[suppId]) { streak++; d.setDate(d.getDate() - 1); } else break; }
+    return streak;
+  };
+  const activeSuppIds = SUPPLEMENTS.filter(s => isSuppActive(s)).map(s => s.id);
+  const todayLoggedCount = activeSuppIds.filter(id => isSuppLogged(id, suppViewDate)).length;
+  const todayAdherence = activeSuppIds.length > 0 ? Math.round((todayLoggedCount / activeSuppIds.length) * 100) : 0;
 
   // ── Cycle calcs ──
   const getPS = () => {
@@ -585,11 +674,12 @@ export default function App() {
   // ── Main App ──
   const tabs = [
     { id: "home", icon: "⬡", label: "Home" },
+    { id: "supps", icon: "◈", label: "Supps" },
     { id: "cycles", icon: "↻", label: "Cycles" },
     { id: "workout", icon: "◎", label: "Workout" },
     { id: "checkin", icon: "◉", label: "Check-in" },
-    { id: "bio", icon: "◈", label: "Labs" },
-    { id: "protocol", icon: "⬡", label: "Protocol" },
+    { id: "bio", icon: "⬡", label: "Labs" },
+    { id: "protocol", icon: "⬢", label: "Protocol" },
   ];
 
   return (
@@ -639,6 +729,20 @@ export default function App() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* ── SUPPLEMENT ADHERENCE ── */}
+            <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, marginBottom: 16, cursor: "pointer" }}
+              onClick={() => setTab("supps")}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                <span style={{ fontSize: 13, fontWeight: 600 }}>Today's Supplements</span>
+                <span style={{ fontSize: 22, fontWeight: 900, color: C.accent }}>{todayAdherence}%</span>
+              </div>
+              <div style={{ height: 8, background: "#1a2038", borderRadius: 4, overflow: "hidden", marginBottom: 8 }}>
+                <div style={{ height: "100%", width: `${todayAdherence}%`, background: `linear-gradient(90deg,${C.accent},${C.accentB})`, borderRadius: 4, transition: "width 0.6s" }} />
+              </div>
+              <div style={{ fontSize: 12, color: C.muted }}>{todayLoggedCount} of {activeSuppIds.length} active supplements taken</div>
+              <div style={{ fontSize: 11, color: C.muted, marginTop: 8, textAlign: "center" }}>Tap to log supplements →</div>
             </div>
 
             {/* ── PROTOCOL PROGRESS ── */}
@@ -709,6 +813,160 @@ export default function App() {
         )}
 
         {/* ── CYCLES ── */}
+        {/* ── SUPPLEMENTS ── */}
+        {tab === "supps" && (
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, margin: "0 0 16px", letterSpacing: "-0.02em" }}>Supplement Stack</h1>
+
+            {/* Date nav + adherence bar */}
+            <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                <button style={{ background: "#0a0e1a", border: `1px solid ${C.border}`, borderRadius: 8, color: C.text, padding: "6px 12px", cursor: "pointer", fontSize: 16 }}
+                  onClick={() => { const d = new Date(suppViewDate + "T12:00:00"); d.setDate(d.getDate() - 1); setSuppViewDate(d.toISOString().split("T")[0]); }}>‹</button>
+                <div style={{ flex: 1, textAlign: "center" }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{suppViewDate === todayStr() ? "Today" : fmtDate(suppViewDate)}</div>
+                  <div style={{ fontSize: 11, color: C.muted }}>{fmtDate(suppViewDate)}</div>
+                </div>
+                <button style={{ background: "#0a0e1a", border: `1px solid ${C.border}`, borderRadius: 8, color: suppViewDate === todayStr() ? C.muted : C.text, padding: "6px 12px", cursor: "pointer", fontSize: 16 }}
+                  onClick={() => { if (suppViewDate === todayStr()) return; const d = new Date(suppViewDate + "T12:00:00"); d.setDate(d.getDate() + 1); setSuppViewDate(d.toISOString().split("T")[0]); }}>›</button>
+              </div>
+              {(() => {
+                const ids = SUPPLEMENTS.filter(s => isSuppActive(s)).map(s => s.id);
+                const logged = ids.filter(id => isSuppLogged(id, suppViewDate)).length;
+                const p = ids.length > 0 ? Math.round((logged / ids.length) * 100) : 0;
+                return (<>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                    <span style={{ fontSize: 12, color: C.muted }}>{logged} of {ids.length} taken</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: p === 100 ? C.accent : C.text }}>{p}%</span>
+                  </div>
+                  <div style={{ height: 6, background: "#1a2038", borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${p}%`, background: p === 100 ? C.accent : `linear-gradient(90deg,${C.accent},${C.accentB})`, borderRadius: 3, transition: "width 0.4s" }} />
+                  </div>
+                </>);
+              })()}
+            </div>
+
+            {TIME_GROUPS.map(group => {
+              const groupSupps = SUPPLEMENTS.filter(s => s.time === group.id);
+              const activeSupps = groupSupps.filter(s => isSuppActive(s));
+              const pendingSupps = groupSupps.filter(s => !isSuppActive(s));
+              if (groupSupps.length === 0) return null;
+              return (
+                <div key={group.id} style={{ marginBottom: 28 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.border}` }}>
+                    <span style={{ fontSize: 20, color: group.color }}>{group.icon}</span>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>{group.label}</div>
+                      <div style={{ fontSize: 11, color: C.muted }}>{group.sublabel}</div>
+                    </div>
+                    <div style={{ marginLeft: "auto", fontSize: 11, color: C.muted }}>
+                      {activeSupps.filter(s => isSuppLogged(s.id, suppViewDate)).length}/{activeSupps.length} taken
+                    </div>
+                  </div>
+
+                  {activeSupps.map(supp => {
+                    const logged = isSuppLogged(supp.id, suppViewDate);
+                    const streak = getSuppStreak(supp.id);
+                    const isExp = expandedSupp === supp.id;
+                    const srcColor = supp.source === "ownit" ? C.accentB : supp.source === "standalone" ? C.pink : C.accent;
+                    const srcLabel = supp.source === "ownit" ? "OwnIt" : supp.source === "standalone" ? "Standalone" : "Protocol";
+                    return (
+                      <div key={supp.id} style={{ background: C.surface, border: `1px solid ${logged ? C.accent + "40" : C.border}`, borderRadius: 14, marginBottom: 10, overflow: "hidden" }}>
+                        <div style={{ padding: "14px 14px 0" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                            <button onClick={() => toggleSuppLog(supp.id, suppViewDate)}
+                              style={{ width: 28, height: 28, borderRadius: 8, border: `2px solid ${logged ? C.accent : C.muted}`, background: logged ? C.accent + "25" : "transparent", flexShrink: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              {logged && <span style={{ color: C.accent, fontSize: 14, fontWeight: 900 }}>✓</span>}
+                            </button>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                                <span style={{ fontSize: 14, fontWeight: 700, color: logged ? C.muted : C.text, textDecoration: logged ? "line-through" : "none" }}>{supp.label}</span>
+                                <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: srcColor + "20", color: srcColor, border: `1px solid ${srcColor}40`, letterSpacing: "0.06em" }}>{srcLabel}</span>
+                              </div>
+                              <div style={{ fontSize: 12, color: C.muted, marginTop: 3 }}>{supp.dose} · {supp.form}</div>
+                            </div>
+                            {streak > 0 && <div style={{ textAlign: "center", flexShrink: 0 }}>
+                              <div style={{ fontSize: 16 }}>🔥</div>
+                              <div style={{ fontSize: 9, color: C.orange, fontWeight: 700 }}>{streak}d</div>
+                            </div>}
+                          </div>
+                          <div onClick={() => setExpandedSupp(isExp ? null : supp.id)}
+                            style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
+                            <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
+                            <span style={{ color: C.muted, fontSize: 11, transform: isExp ? "rotate(180deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>▼</span>
+                          </div>
+                        </div>
+                        {isExp && (
+                          <div style={{ borderTop: `1px solid ${C.border}`, background: "#0a0e1a", padding: 14 }}>
+                            <div style={{ fontSize: 10, color: group.color, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Why In Your Stack</div>
+                            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.7, marginBottom: 12 }}>{supp.why}</div>
+                            <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Targets</div>
+                            <div style={{ fontSize: 12, color: C.text, marginBottom: 12 }}>{supp.target}</div>
+                            {supp.note && <div style={{ background: C.orange + "10", border: `1px solid ${C.orange}30`, borderRadius: 8, padding: "10px 12px" }}>
+                              <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700, marginBottom: 4 }}>⚑ Note</div>
+                              <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.note}</div>
+                            </div>}
+                            {supp.status !== "active" && <button style={{ background: "#1a2038", color: C.red, border: `1px solid ${C.red}40`, borderRadius: 8, padding: "9px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", width: "100%", marginTop: 12 }} onClick={() => deactivateSupp(supp.id)}>Set back to pending</button>}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {pendingSupps.length > 0 && (
+                    <div style={{ marginTop: 8 }}>
+                      <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Pending — activate when purchased</div>
+                      {pendingSupps.map(supp => {
+                        const isExp = expandedSupp === supp.id;
+                        return (
+                          <div key={supp.id} style={{ background: "#0a0c14", border: `1px dashed ${C.border}`, borderRadius: 14, marginBottom: 8, overflow: "hidden", opacity: 0.78 }}>
+                            <div style={{ padding: "12px 14px 0" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                                <div style={{ width: 28, height: 28, borderRadius: 8, border: `2px dashed ${C.muted}`, flexShrink: 0 }} />
+                                <div style={{ flex: 1 }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                                    <span style={{ fontSize: 14, fontWeight: 600, color: C.muted }}>{supp.label}</span>
+                                    <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 10, background: C.muted + "20", color: C.muted, border: `1px solid ${C.muted}40`, letterSpacing: "0.06em" }}>PENDING</span>
+                                  </div>
+                                  <div style={{ fontSize: 12, color: C.muted, marginTop: 3, opacity: 0.7 }}>{supp.dose} · {supp.form}</div>
+                                </div>
+                                <button onClick={() => activateSupp(supp.id)}
+                                  style={{ background: C.accent + "15", border: `1px solid ${C.accent}40`, borderRadius: 8, color: C.accent, padding: "6px 12px", cursor: "pointer", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+                                  Activate
+                                </button>
+                              </div>
+                              <div onClick={() => setExpandedSupp(isExp ? null : supp.id)}
+                                style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
+                                <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
+                                <span style={{ color: C.muted, fontSize: 11, transform: isExp ? "rotate(180deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>▼</span>
+                              </div>
+                            </div>
+                            {isExp && (
+                              <div style={{ borderTop: `1px solid ${C.border}`, background: "#070910", padding: 14 }}>
+                                <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Why This Belongs In Your Stack</div>
+                                <div style={{ fontSize: 12, color: C.text, lineHeight: 1.7, marginBottom: 12 }}>{supp.why}</div>
+                                <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>Targets</div>
+                                <div style={{ fontSize: 12, color: C.text, marginBottom: 12 }}>{supp.target}</div>
+                                {supp.note && <div style={{ background: C.orange + "10", border: `1px solid ${C.orange}30`, borderRadius: 8, padding: "10px 12px", marginBottom: 12 }}>
+                                  <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700, marginBottom: 4 }}>⚑ Note</div>
+                                  <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.note}</div>
+                                </div>}
+                                <button style={{ background: `linear-gradient(135deg,${C.accent},${C.accentB})`, color: "#000", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 14, fontWeight: 700, cursor: "pointer", width: "100%" }} onClick={() => activateSupp(supp.id)}>
+                                  ✓ I've purchased this — start tracking
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {tab === "cycles" && (
           <div>
             <PageTitle>Protocol Cycles</PageTitle>
@@ -1001,159 +1259,4 @@ export default function App() {
 
                       {/* What */}
                       <div style={{ padding: "14px 16px 0" }}>
-                        <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>What To Take / Do</div>
-                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: "pre-line" }}>{action.what}</div>
-                      </div>
-
-                      {/* Timing */}
-                      <div style={{ padding: "14px 16px 0" }}>
-                        <div style={{ fontSize: 10, color: C.accent, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>Timing</div>
-                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7 }}>{action.timing}</div>
-                      </div>
-
-                      {/* Brands */}
-                      <div style={{ padding: "14px 16px 0" }}>
-                        <div style={{ fontSize: 10, color: C.purple, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>Brands / Sources</div>
-                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7 }}>{action.brands}</div>
-                      </div>
-
-                      {/* Note */}
-                      {action.note && (
-                        <div style={{ margin: "14px 16px 0", background: C.orange + "10", border: `1px solid ${C.orange}30`, borderRadius: 10, padding: "12px 14px" }}>
-                          <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>⚑ Important Note</div>
-                          <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{action.note}</div>
-                        </div>
-                      )}
-
-                      {/* Mark complete button */}
-                      <div style={{ padding: 16 }}>
-                        <button
-                          style={{ ...isComplete ? Tx.btnSmall : Tx.btnPrimary, width: "100%" }}
-                          onClick={() => toggleActionComplete(action.id)}>
-                          {isComplete ? "✓ Completed — Tap to Undo" : "Mark as Complete"}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-      </div>
-
-      {/* Bottom nav */}
-      <nav style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: C.surface, borderTop: `1px solid ${C.border}`, display: "flex", padding: "8px 0 env(safe-area-inset-bottom,8px)" }}>
-        {tabs.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)}
-            style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "6px 0", color: tab === t.id ? C.accent : C.muted }}>
-            <span style={{ fontSize: tab === "protocol" && t.id === "protocol" ? 14 : 18 }}>{t.id === "protocol" ? "⬢" : t.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: tab === t.id ? 700 : 500, letterSpacing: "0.04em" }}>{t.label}</span>
-          </button>
-        ))}
-      </nav>
-    </div>
-  );
-}
-
-// ── PDF Results Panel ─────────────────────────────────────────────────────
-function PDFResultsPanel({ results, onImport, onDismiss }) {
-  const [selected, setSelected] = useState(new Set(results.map((_, i) => i)));
-  const toggle = i => setSelected(prev => { const s = new Set(prev); s.has(i) ? s.delete(i) : s.add(i); return s; });
-  const flagColor = f => f === "H" ? "#ff8c42" : f === "L" ? "#60a5fa" : C.subtle;
-
-  return (
-    <div style={{ background: "#0a1428", border: `1px solid ${C.accentB}40`, borderRadius: 16, padding: 20, marginBottom: 16 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-        <div>
-          <div style={{ fontWeight: 700, fontSize: 15, color: C.text }}>PDF Results Found</div>
-          <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{results.length} values extracted · {selected.size} selected</div>
-        </div>
-        <button style={{ background: "none", border: "none", color: C.muted, fontSize: 20, cursor: "pointer" }} onClick={onDismiss}>×</button>
-      </div>
-      <div style={{ maxHeight: 300, overflowY: "auto", marginBottom: 14 }}>
-        {results.map((r, i) => (
-          <div key={i} onClick={() => toggle(i)}
-            style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 10, marginBottom: 6, background: selected.has(i) ? "#0d2040" : "#0a0e1a", border: `1px solid ${selected.has(i) ? C.accentB + "40" : C.border}`, cursor: "pointer" }}>
-            <div style={{ width: 18, height: 18, borderRadius: 4, background: selected.has(i) ? C.accentB : "transparent", border: `2px solid ${selected.has(i) ? C.accentB : C.muted}`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              {selected.has(i) && <span style={{ color: "#000", fontSize: 11, fontWeight: 900 }}>✓</span>}
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{r.name}</div>
-              {r.reference && <div style={{ fontSize: 11, color: C.muted }}>Ref: {r.reference}</div>}
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: r.flag && r.flag !== "normal" ? flagColor(r.flag) : C.accent }}>{r.value} {r.unit}</div>
-              {r.flag && r.flag !== "normal" && <div style={{ fontSize: 10, fontWeight: 700, color: flagColor(r.flag) }}>{r.flag === "H" ? "HIGH" : "LOW"}</div>}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "flex", gap: 10 }}>
-        <button style={{ ...Tx.btnSmall, flex: 1 }} onClick={() => setSelected(new Set(results.map((_, i) => i)))}>Select all</button>
-        <button style={{ ...Tx.btnPrimary, flex: 2 }} onClick={() => onImport(results.filter((_, i) => selected.has(i)))}>
-          Import {selected.size} results
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ── Small components ──────────────────────────────────────────────────────
-function StatCard({ icon, label, val, sub, color }) {
-  return (
-    <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: 16 }}>
-      <div style={{ fontSize: 18, color, marginBottom: 8 }}>{icon}</div>
-      <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>{label}</div>
-      <div style={{ fontSize: 16, fontWeight: 700, color, marginBottom: 3 }}>{val}</div>
-      <div style={{ fontSize: 11, color: C.muted }}>{sub}</div>
-    </div>
-  );
-}
-
-function Badge({ color, children }) {
-  return <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 9px", borderRadius: 20, background: color + "20", color, border: `1px solid ${color}40`, letterSpacing: "0.05em" }}>{children}</span>;
-}
-
-function PTag({ name, dose, color = C.accent }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "7px 12px", borderRadius: 8, background: color + "15", border: `1px solid ${color}30`, color }}>
-      <span style={{ fontWeight: 700, fontSize: 12 }}>{name}</span>
-      <span style={{ fontSize: 10, opacity: 0.8 }}>{dose}</span>
-    </div>
-  );
-}
-
-function Card({ children }) {
-  return <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, marginBottom: 14 }}>{children}</div>;
-}
-
-function Row({ children }) {
-  return <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 0", borderBottom: `1px solid ${C.border}`, flexWrap: "wrap" }}>{children}</div>;
-}
-
-function PageTitle({ children }) {
-  return <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, margin: "0 0 16px", letterSpacing: "-0.02em" }}>{children}</h1>;
-}
-
-function SectionTitle({ children }) {
-  return <h2 style={{ fontSize: 14, fontWeight: 700, color: C.subtle, margin: "20px 0 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>{children}</h2>;
-}
-
-function Empty({ children }) {
-  return <p style={{ color: C.muted, fontSize: 13, fontStyle: "italic", padding: "8px 0" }}>{children}</p>;
-}
-
-const Tx = {
-  label: { display: "block", fontSize: 11, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6, marginTop: 12 },
-  input: { display: "block", width: "100%", background: "#0a0e1a", border: `1px solid ${C.border}`, borderRadius: 10, color: C.text, padding: "11px 14px", fontSize: 14, marginBottom: 8, outline: "none", boxSizing: "border-box", fontFamily: "inherit" },
-  btnPrimary: { background: `linear-gradient(135deg,${C.accent},${C.accentB})`, color: "#000", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 14, fontWeight: 700, cursor: "pointer", width: "100%", letterSpacing: "0.02em" },
-  btnSmall: { background: "#1a2038", color: C.text, border: `1px solid ${C.border}`, borderRadius: 8, padding: "9px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", width: "100%" },
-};
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+                        <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700,
