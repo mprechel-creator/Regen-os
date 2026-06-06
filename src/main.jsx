@@ -11,6 +11,7 @@ const defaultData = {
   checkins: [],
   biomarkers: [],
   setupComplete: false,
+  protocolActions: {},
 };
 
 // ─── Constants ─────────────────────────────────────────────────────────────
@@ -28,6 +29,349 @@ const C = {
   accentB: "#3d9eff", purple: "#a78bfa", pink: "#f472b6", orange: "#f0a500",
   red: "#ff6b6b", text: "#e2e8f0", muted: "#4a5568", subtle: "#8892a4",
 };
+
+// ─── Protocol Actions Data ──────────────────────────────────────────────────
+const PROTOCOL_CATEGORIES = [
+  {
+    id: "supplements",
+    icon: "◈",
+    label: "Supplements",
+    color: C.accent,
+    actions: [
+      {
+        id: "d3k2",
+        title: "Add Vitamin D3 + K2-MK7",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "Standalone supplement — your VDR triple variant makes this critical",
+        why: "Your VDR triple variant (Fok1 TT, Bsm1 GA, Taq1 TC) impairs Vitamin D at three distinct points: absorption, conversion, and receptor binding. The 3000 IU already in your OwnIt stack is likely insufficient for cellular utilization — even if serum levels look adequate, your cells may not be responding to the signal. This affects your bone health (VERY HIGH), brain health via APOE E4, and vascular function simultaneously. This is the single highest-leverage supplement change you can make right now.",
+        what: "4000–5000 IU Vitamin D3 + 100mcg K2-MK7 (MenaQ7 form specifically). Take with your largest meal — fat significantly increases absorption. Use a softgel form rather than tablet for D3.",
+        brands: "Thorne D3/K2, Pure Encapsulations D3/K2, or any product specifying MenaQ7-form K2",
+        timing: "With largest meal, daily",
+        note: "Take in addition to the D3 already in OwnIt — not instead of it. K2-MK7 directs calcium into bone rather than soft tissue, critical given your bone health VERY HIGH rating.",
+        pathways: ["Bone Health", "Memory & Brain", "Vascular Health", "Hormone Balance"],
+      },
+      {
+        id: "omega3",
+        title: "Add EPA+DHA Omega-3",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "FADS1/FADS2 variants mean you can't convert plant omega-3 — marine source essential",
+        why: "Your FADS1 GT + FADS2 CG variants mean you convert plant-based ALA omega-3 to EPA/DHA poorly. This matters because EPA and DHA are the active forms your body needs for reducing neuroinflammation, building neuronal membranes, and resolving inflammatory cascades. Combined with APOE E3/E4 neuroinflammation risk, this moves omega-3 from 'recommended' to essential. E4 carriers specifically show greater cognitive benefit from omega-3 than E3/E3 individuals in multiple studies.",
+        what: "2–3g combined EPA+DHA per day. Triglyceride form (look for 'rTG' or 'natural triglyceride' on the label) — significantly higher bioavailability than ethyl ester form.",
+        brands: "Nordic Naturals Ultimate Omega, Carlson Elite Omega-3, or algae-based DHA if fish-free preferred",
+        timing: "With a meal containing fat",
+        note: "Do not use flaxseed oil as your primary omega-3 — your FADS1/FADS2 variants mean ALA-to-EPA conversion is impaired. You need preformed EPA/DHA from marine sources directly.",
+        pathways: ["Inflammation", "APOE E4", "Vascular Health", "Mood & Behavior", "Recovery"],
+      },
+      {
+        id: "magnesium",
+        title: "Add Magnesium Glycinate — therapeutic dose",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "30mg in OwnIt stack is a fraction of what your genetic profile requires",
+        why: "Magnesium is a cofactor in over 300 enzymatic reactions directly implicated in your findings: MTHFR enzyme function requires magnesium, your mood & behavior VERY HIGH pathway (COMT GA) is stabilized by magnesium, your glucose & insulin HIGH pathway needs it for insulin receptor signaling, and it's a structural component of bone matrix. The 30mg glycinate in your OwnIt stack is doing almost nothing therapeutically — it is present but not at a meaningful dose.",
+        what: "300–400mg elemental magnesium at night. Glycinate form for best sleep, mood, and bioavailability. Malate is a good alternative if glycinate causes loose stools.",
+        brands: "Pure Encapsulations Magnesium Glycinate, Thorne Magnesium Bisglycinate, Doctor's Best High Absorption Magnesium",
+        timing: "60–90 minutes before sleep — also directly supports sleep quality relevant to APOE E4 glymphatic clearance",
+        note: "The sleep timing is not arbitrary — magnesium taken before bed supports slow-wave sleep, which is your primary glymphatic clearance window given APOE E4 status.",
+        pathways: ["Mood & Behavior", "Methylation", "Blood Pressure", "Bone Health", "Sleep Quality"],
+      },
+      {
+        id: "glutathione",
+        title: "Upgrade Glutathione Form",
+        urgency: "SOON",
+        urgencyColor: C.orange,
+        shortDesc: "Reduced glutathione in your stack has poor oral bioavailability — GSTM1 DEL requires better delivery",
+        why: "You have a complete deletion of GSTM1 — you produce zero of this enzyme, which normally conjugates glutathione to toxins for removal. This is binary and permanent. The reduced glutathione in your OwnIt stack is the right idea but the wrong form — standard reduced glutathione is largely destroyed in the digestive tract before reaching cells. Given the complete GSTM1 absence, upgrading the delivery form makes a meaningful real-world difference to your antioxidant defense.",
+        what: "S-Acetyl Glutathione 200mg (acetylated form survives digestion and enters cells intact) OR Liposomal Glutathione 250–500mg (lipid encapsulation protects from gastric degradation).",
+        brands: "Jarrow Formulas S-Acetyl Glutathione, Quicksilver Scientific Liposomal Glutathione",
+        timing: "Morning, away from food for best absorption",
+        note: "Add as a separate supplement alongside your OwnIt stack — the NAC already in your stack remains valuable as an endogenous glutathione precursor. These work together, not as replacements.",
+        pathways: ["Oxidative Stress", "Detoxification", "Recovery"],
+      },
+      {
+        id: "nmn",
+        title: "Add NMN or NR — NAD+ Precursor",
+        urgency: "SOON",
+        urgencyColor: C.orange,
+        shortDesc: "PPARGC1A AA homozygous variant depletes mitochondrial signaling upstream — CoQ10 alone isn't enough",
+        why: "Your PPARGC1A AA (homozygous) variant significantly impairs mitochondrial biogenesis — your cells make fewer new mitochondria in response to exercise and caloric stress than average. Your OwnIt stack already contains CoQ10 (300mg) and PQQ (10mg) which work downstream of this impairment, supporting the mitochondria you have. But NMN works upstream: NAD+ is the primary substrate that activates SIRT1, which in turn activates PGC-1 alpha — the exact protein your variant reduces. You need both the upstream signal (NMN) and the downstream support (CoQ10, PQQ) for full coverage.",
+        what: "NMN 250–500mg/day or NR (Nicotinamide Riboside) 300mg/day. Both are effective NAD+ precursors — NMN is the more direct pathway, NR has more clinical trial data.",
+        brands: "Tru Niagen (NR), ProHealth Longevity NMN, Alive by Science NMN",
+        timing: "Morning, on an empty stomach or with a light meal",
+        note: "This also addresses your energy expenditure, weight management, and vascular health pathways simultaneously — NMN is one of the highest-leverage single additions for your genetic profile.",
+        pathways: ["Energy Expenditure", "Mitochondrial Function", "Adipogenesis", "Longevity"],
+      },
+      {
+        id: "apoe_layer",
+        title: "Build APOE E4 Neuroprotective Layer",
+        urgency: "60 DAYS",
+        urgencyColor: C.purple,
+        shortDesc: "Three targeted compounds for E4-specific mechanisms — none currently in your stack",
+        why: "APOE E4 impairs three specific mechanisms: amyloid clearance from brain tissue, cholesterol redistribution within neurons, and microglial (brain immune cell) activation leading to neuroinflammation. Your current stack addresses systemic inflammation broadly but has no compounds specifically targeting these neural mechanisms. These three additions work on the E4-specific pathways and have the strongest evidence base for E4 carriers specifically.",
+        what: "1. Alpha-GPC 300–600mg/day OR Citicoline (CDP-Choline) 250–500mg/day — crosses blood-brain barrier, supports acetylcholine synthesis. E4 carriers have accelerated neural choline use, making this upgrade from choline bitartrate meaningful.\n\n2. Lion's Mane Mushroom Extract 500–1000mg/day (fruiting body, not mycelium) — stimulates NGF (Nerve Growth Factor), promotes neuronal maintenance and plasticity. Strong evidence for memory & brain VERY HIGH + APOE E4.\n\n3. Trans-Resveratrol 250–500mg/day — activates SIRT1, upregulates BDNF, reduces amyloid aggregation, AND activates eNOS for vascular health. One compound addressing both APOE E4 and your vascular pathway simultaneously.",
+        brands: "Alpha-GPC: Jarrow Formulas, NOW Foods. Lion's Mane: Host Defense, Real Mushrooms (fruiting body only). Resveratrol: Thorne ResveraCel, Tru Niagen with Resveratrol",
+        timing: "Alpha-GPC and Lion's Mane — morning with food. Resveratrol — with a meal containing fat (significantly improves absorption)",
+        note: "These can be added one at a time over 60 days rather than all at once. Suggested order: Alpha-GPC first (highest immediate cognitive relevance), then Resveratrol (dual vascular + brain benefit), then Lion's Mane.",
+        pathways: ["APOE E4", "Memory & Brain", "Vascular Health", "Mood & Behavior"],
+      },
+      {
+        id: "citrulline",
+        title: "Add Citrulline Malate or Beetroot Extract",
+        urgency: "60 DAYS",
+        urgencyColor: C.purple,
+        shortDesc: "ENOS GT variant reduces nitric oxide — these bypass your genetic impairment entirely",
+        why: "Your ENOS GT (Glu298Asp) variant reduces the efficiency of endothelial nitric oxide synthase — the enzyme that keeps your blood vessels flexible and resistant to damage. Less nitric oxide means reduced vascular flexibility, harder blood pressure regulation, and increased endothelial vulnerability. The key insight: dietary nitrates from beetroot and citrulline are converted to nitric oxide via a completely different pathway (salivary bacteria → nitrite → NO) that completely bypasses the eNOS enzyme. Your genetic variant is irrelevant to this pathway.",
+        what: "Option A: Citrulline Malate 3–6g/day, best taken pre-exercise. Option B: Concentrated beetroot extract equivalent to 500ml beetroot juice, daily.",
+        brands: "NOW Foods Citrulline Malate, Kala Health Citrulline. Beetroot: HumanN SuperBeets, Purely Inspired Beets",
+        timing: "Citrulline: 30–60 min pre-exercise. Beetroot: any time with food",
+        note: "Important: avoid antiseptic/antibacterial mouthwash — it kills the oral bacteria required for nitrate-to-nitrite conversion, negating the effect of dietary nitrates.",
+        pathways: ["Vascular Health", "Blood Pressure", "Exercise Response"],
+      },
+    ],
+  },
+  {
+    id: "testing",
+    icon: "◎",
+    label: "Testing",
+    color: C.accentB,
+    actions: [
+      {
+        id: "hormone_redraw",
+        title: "Hormone Redraw — 48–72hrs Post-Injection",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "Prior draw captured peak timing — no protocol decisions until steady-state reading",
+        why: "Your most recent hormone draw was taken the day after an hCG injection, which means it captured a peak value rather than steady-state. This significantly distorts the results — elevated readings in this context don't reflect your actual baseline and should not be used to make protocol decisions (such as adding anastrozole). A properly timed redraw at 48–72 hours post-injection gives you the steady-state picture your protocol decisions should be based on.",
+        what: "Expanded panel at 48–72 hours post-injection: Total testosterone, Free testosterone, Estradiol (sensitive assay — not standard), SHBG, LH, FSH, Serum copper, Ceruloplasmin, B12 (serum), RBC Folate, Homocysteine, 25-OH-D, 1,25-OH-D (active Vitamin D — critical given VDR variants), hsCRP, ApoB",
+        brands: "Dynacare or LifeLabs in Canada — most of these are standard requisition items",
+        timing: "Exactly 48–72 hours after your most recent hCG injection — not before, not significantly after",
+        note: "Request both 25-OH-D (circulating Vitamin D) AND 1,25-OH-D (active hormone form). Your VDR triple variant means your receptors may respond poorly even when serum levels look normal. Both values together tell the full story.",
+        pathways: ["Hormone Balance", "Methylation", "Vitamin D", "Vascular Health"],
+      },
+      {
+        id: "truage",
+        title: "Book TruAge Epigenetic Baseline",
+        urgency: "SOON",
+        urgencyColor: C.orange,
+        shortDesc: "Establish cellular age before protocol changes — clean baseline before peptides and Epithalon",
+        why: "TruAge measures DNA methylation patterns across multiple aging clocks to give you biological age vs chronological age. The critical reason to do this now — before adding NMN, before starting peptides, before the first Epithalon cycle — is that you need a clean baseline that reflects your current state. If you run Epithalon first and then test, you won't know what your starting point was. This baseline is the foundational data point for measuring whether your entire protocol is working over time.",
+        what: "TruDiagnostic TruAge test — DNA methylation analysis via blood spot or saliva. Confirmed accessible in Canada. Tests multiple aging clocks including GrimAge, PhenoAge, and telomere length estimates.",
+        brands: "TruDiagnostic (trudiagnostic.com) — order directly, self-collection kit mailed to you",
+        timing: "Before starting peptide cycle and before first Epithalon cycle — as soon as possible",
+        note: "Repeat annually to track protocol impact. Pair with GlycanAge every 6 months for faster-feedback biological age data between annual TruAge tests.",
+        pathways: ["Longevity Tracking", "Telomere Health", "Protocol Validation"],
+      },
+      {
+        id: "apob",
+        title: "Add ApoB to Next Lipid Panel",
+        urgency: "SOON",
+        urgencyColor: C.orange,
+        shortDesc: "Standard LDL-C is inadequate for APOE E4 carriers — particle number is what matters",
+        why: "APOE E4 impairs LDL particle clearance from circulation. Standard lipid panels measure LDL cholesterol content (LDL-C), but it is the number of LDL particles (measured by ApoB) that determines cardiovascular risk — a particle can cause damage regardless of how much cholesterol it carries. You may have normal LDL-C but elevated particle number. ApoB is now considered the most predictive cardiovascular risk marker by longevity medicine practitioners, and is particularly critical for E4 carriers.",
+        what: "Request ApoB, ApoA1, and hsCRP alongside standard lipid panel (total cholesterol, LDL-C, HDL-C, triglycerides). These are standard lab requisition items at Dynacare.",
+        brands: "Dynacare or LifeLabs — standard requisition",
+        timing: "Fasted (12 hours) for accurate triglyceride and LDL readings",
+        note: "Longevity medicine target for ApoB is below 80 mg/dL. Standard 'normal' ranges on lab reports are population-average, not longevity-optimized. hsCRP tracks your systemic inflammation load — a direct readout of your IL-6 and TNF-alpha genetic activity.",
+        pathways: ["APOE E4", "Cholesterol", "Vascular Health"],
+      },
+      {
+        id: "glycanage",
+        title: "Book GlycanAge — Faster Feedback Biological Age",
+        urgency: "60 DAYS",
+        urgencyColor: C.purple,
+        shortDesc: "Inflammation-sensitive biological age marker — changes visible in months, not years",
+        why: "TruAge gives deep epigenetic data but responds slowly to interventions. GlycanAge measures IgG glycosylation — a marker of biological age that is highly sensitive to inflammatory status and changes meaningfully within 3–6 months of protocol changes. Given your inflammation VERY HIGH genetic profile, this marker will be particularly informative for tracking whether your anti-inflammatory interventions (curcumin, omega-3, EGCG, diet) are actually moving the needle on your biological inflammatory burden.",
+        what: "GlycanAge blood spot test. Confirmed accessible in Canada. Measures N-glycan patterns on immunoglobulin G as a proxy for biological age and inflammatory burden.",
+        brands: "GlycanAge (glycanage.com) — direct order, self-collection kit",
+        timing: "After your TruAge baseline is established — gives faster-changing feedback between annual TruAge tests",
+        note: "Repeat every 6 months. Gives you a meaningful signal about protocol effectiveness between annual TruAge tests. Particularly valuable in the first year when you are adding multiple interventions and want feedback on what's working.",
+        pathways: ["Inflammation Tracking", "Biological Age", "Protocol Validation"],
+      },
+    ],
+  },
+  {
+    id: "peptides",
+    icon: "↻",
+    label: "Peptides",
+    color: C.purple,
+    actions: [
+      {
+        id: "bpc_tb500",
+        title: "Begin BPC-157 + TB-500 Foundation Cycle",
+        urgency: "SOON",
+        urgencyColor: C.orange,
+        shortDesc: "Your genetic profile specifically validates this stack — VEGFA AA + MMP3 AG are direct targets",
+        why: "BPC-157's primary mechanism — upregulating VEGF receptor expression and promoting angiogenesis in tendons — directly compensates for your VEGFA AA variant which reduces native VEGF production. TB-500 addresses the MMP3 AG breakdown-dominant collagen balance by promoting structural tissue repair. Your injury pathway is VERY HIGH, recovery is VERY HIGH, and collagen & joints is VERY HIGH — this stack addresses all three simultaneously. This is one of the clearest genetic-to-peptide alignments in your entire profile.",
+        what: "BPC-157: 250–300mcg/day subcutaneous or oral for first 2 weeks, then 500mcg if well tolerated. TB-500: 2.5mg twice weekly subcutaneous. Run together for 8-week on-cycle.",
+        brands: "Quality-tested peptides from your existing sourcing approach — verify purity certificates (HPLC analysis) before use",
+        timing: "BPC-157: morning on empty stomach if oral, anytime if subcutaneous. TB-500: consistent day and time each week (e.g. Monday and Thursday)",
+        note: "Monitor HRV on Oura as primary recovery feedback signal during the cycle. Also watch sleep quality — BPC-157 can affect dopaminergic tone in COMT GA individuals, which may show up as altered sleep architecture in the first 1–2 weeks.",
+        pathways: ["Collagen & Joints", "Injury", "Recovery", "Vascular Health"],
+      },
+      {
+        id: "ipamorelin",
+        title: "Add Ipamorelin — Pre-Sleep GH Secretagogue",
+        urgency: "SOON",
+        urgencyColor: C.orange,
+        shortDesc: "GH support addresses energy metabolism, collagen synthesis, and recovery simultaneously",
+        why: "Ipamorelin stimulates GH release via the ghrelin receptor, which downstream supports IGF-1, fat oxidation, collagen synthesis, and recovery. Given your PPARGC1A AA (reduced mitochondrial biogenesis) and the multiple energy pathway VERY HIGH ratings, GH-mediated metabolic support is well-aligned. Pre-sleep timing aligns with the natural GH secretion peak during first deep sleep cycle and — importantly for APOE E4 — does not compete with the glymphatic amyloid clearance window that also occurs during deep sleep.",
+        what: "100–200mcg subcutaneous, 30–60 minutes before sleep. Start at 100mcg for first 2 weeks.",
+        brands: "Quality-tested peptides — same sourcing as BPC-157/TB-500",
+        timing: "30–60 min before sleep, after a 2–3 hour fast. Insulin from recent eating blunts GH response significantly.",
+        note: "APOE E4 consideration: Ipamorelin produces physiological GH pulses, not supraphysiological levels. Conservative dosing (100–200mcg) is appropriate — do not escalate beyond 200mcg without knowing your IGF-1 response. Monitor slow-wave sleep % on Oura as a proxy for GH secretion quality.",
+        pathways: ["Energy Expenditure", "Recovery", "Collagen & Joints", "APOE E4"],
+      },
+      {
+        id: "epithalon",
+        title: "Schedule Epithalon — First Off-Cycle Month",
+        urgency: "60 DAYS",
+        urgencyColor: C.purple,
+        shortDesc: "Telomerase activation particularly well-indicated given your oxidative stress genetic burden",
+        why: "High oxidative stress accelerates telomere attrition — each oxidative insult causes small amounts of telomere damage. Your genetic profile (GSTM1 DEL, GSTT1 DEL, GPX1 TT) means your oxidative burden is higher than average and your clearance is lower, meaning your telomeres are likely under greater-than-average stress. Epithalon's telomerase-activating mechanism directly addresses this. Running it twice yearly during peptide off-months is the correct timing — the off-month creates metabolic space for a different intervention type.",
+        what: "10mg total over 10 days (1mg/day subcutaneous) OR 20mg over 20 days. Twice yearly — coordinate with your existing plan.",
+        brands: "Quality-tested peptides — verify purity",
+        timing: "During 4-week peptide off-cycle. Do not run concurrently with BPC-157/TB-500/Ipamorelin.",
+        note: "CRITICAL: Complete your TruAge baseline test BEFORE the first Epithalon cycle. You need pre-intervention data to measure impact. Also coordinate senolytic pulse (Fisetin + Quercetin) during the same off-month — space them at least 1 week apart within the month.",
+        pathways: ["Telomere Health", "Oxidative Stress", "Longevity"],
+      },
+      {
+        id: "semax_selank",
+        title: "Semax + Selank — Start After Baseline Established",
+        urgency: "60 DAYS",
+        urgencyColor: C.purple,
+        shortDesc: "Well-indicated for your profile but COMT GA + attention prescription requires careful entry",
+        why: "Semax upregulates BDNF — directly compensatory for your BDNF GA (Val66Met) variant which reduces activity-dependent BDNF secretion by ~30%. Selank is GABAergic and anxiolytic, well-matched to your HTR1A serotonin receptor variant. However, your COMT GA variant means dopamine clears more slowly from your prefrontal cortex than average — Semax's dopaminergic modulation may be more pronounced in your neurochemical context. Starting after your BPC-157 cycle is established gives you clean baseline sleep and HRV data to compare against.",
+        what: "Selank first: 300–600mcg intranasal, on-demand for lower performance days. Add Semax second: 300–600mcg intranasal, on-demand. Monitor mood and sleep for 24–48hrs after each Semax use given COMT GA slow clearance.",
+        brands: "Quality-tested peptides — intranasal preparation requires sterile mixing",
+        timing: "On-demand, morning use. Do not use Semax on same days as stimulant attention medication initially — assess your individual response first.",
+        note: "Your attention prescription operates on dopaminergic and noradrenergic pathways — the same ones COMT GA modulates. Do not combine until you understand your individual Semax response. Start with Selank alone for 2–3 uses before adding Semax.",
+        pathways: ["Mood & Behavior", "Memory & Brain", "APOE E4", "COMT GA"],
+      },
+    ],
+  },
+  {
+    id: "lifestyle",
+    icon: "◉",
+    label: "Diet & Lifestyle",
+    color: C.pink,
+    actions: [
+      {
+        id: "collagen",
+        title: "Add Hydrolyzed Collagen — Timed Around Exercise",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "Timing is critical — 30–60 min before exercise is 20% more effective for tendon synthesis",
+        why: "Your collagen & joints pathway is VERY HIGH driven by GDF5 TT (reduced cartilage resilience), VEGFA AA (impaired tendon vascularization), and MMP3 AG (increased connective tissue breakdown). Hydrolyzed collagen peptides provide the amino acid substrate — glycine, proline, hydroxyproline — that fibroblasts need to synthesize new collagen. A 2019 study specifically showed that taking collagen peptides with Vitamin C 30–60 minutes before exercise increased collagen synthesis markers in tendons by approximately 20% compared to other timing. For your genotype this is not a marginal optimization.",
+        what: "10–15g hydrolyzed collagen peptides + 250–500mg Vitamin C taken 30–60 minutes before exercise. Type I + III collagen blend is most relevant for tendons and ligaments.",
+        brands: "Great Lakes Wellness, Vital Proteins, Further Food. Any unflavored hydrolyzed collagen is appropriate — avoid gelatin (different processing).",
+        timing: "30–60 min before exercise — this is not arbitrary, this is the specific window when fibroblasts are primed to incorporate collagen substrate",
+        note: "BPC-157 in your peptide stack and collagen timing work synergistically — BPC-157 upregulates VEGF receptors for vascularization while timed collagen provides the structural substrate. Run both when peptide cycle is active.",
+        pathways: ["Collagen & Joints", "Injury", "Bone Health", "Recovery"],
+      },
+      {
+        id: "meal_timing",
+        title: "Formalize Eating Window — Earlier Cutoff",
+        urgency: "SOON",
+        urgencyColor: C.orange,
+        shortDesc: "CLOCK TT variant reduces metabolic efficiency of late-day calories",
+        why: "Your CLOCK TT (3111) variant affects circadian metabolic timing — it is associated with reduced metabolic processing efficiency for calories consumed later in the day. Combined with your PPARGC1A AA (fewer mitochondria, less energy burning capacity) and UCP2/UCP3 variants (reduced thermogenic uncoupling), late eating hits you harder metabolically than it does most people. For APOE E4 specifically, intermittent fasting also upregulates autophagy (cellular cleanup including amyloid precursor clearance), increases BDNF, and activates glymphatic pathways — making this one of the highest-leverage lifestyle interventions for your specific genotype combination.",
+        what: "16:8 intermittent fasting with eating window ending by 7–8pm. Front-load calories toward earlier in the day.",
+        brands: "N/A — dietary practice",
+        timing: "Consistent daily eating window. The Ipamorelin pre-sleep injection requires a 2–3 hour food-free window anyway — an earlier eating cutoff supports this automatically.",
+        note: "Your existing lower-carbohydrate whole food approach is already well-matched to your biology. This adds timing precision to an already good dietary foundation rather than requiring dietary overhaul.",
+        pathways: ["Adipogenesis", "Energy Expenditure", "APOE E4", "Inflammation"],
+      },
+      {
+        id: "zone2",
+        title: "Add Consistent Zone 2 Cardio",
+        urgency: "SOON",
+        urgencyColor: C.orange,
+        shortDesc: "PPARGC1A AA requires Zone 2 to drive mitochondrial adaptation — HIIT alone is insufficient",
+        why: "Your ACTN3 RR power genotype may pull you naturally toward strength training. But your PPARGC1A AA variant has a specific requirement: prolonged sub-threshold (Zone 2) cardio is the primary stimulus for PGC-1 alpha expression in skeletal muscle — the exact pathway your variant impairs. HIIT also helps but cannot fully replace Zone 2 for mitochondrial density. Aerobic exercise is also the most powerful natural eNOS upregulator that exists — it increases shear stress on vessel walls which directly stimulates nitric oxide production, compensating for your ENOS GT variant regardless of genetics.",
+        what: "2–3 sessions per week of Zone 2 cardio, 30–45 minutes each. Zone 2 = conversational pace, roughly 60–70% of max heart rate. Add 1 HIIT session per week (4–6 x 30-second maximal efforts with full recovery).",
+        brands: "N/A — training practice. Use Oura heart rate data or a heart rate monitor to confirm Zone 2 range.",
+        timing: "Separate from heavy strength sessions — not immediately after high-intensity lifting",
+        note: "Track resting heart rate trend on Oura over weeks as a proxy for mitochondrial adaptation progress. A downward RHR trend is a positive signal that Zone 2 is working.",
+        pathways: ["Energy Expenditure", "Exercise Response", "Vascular Health", "APOE E4"],
+      },
+      {
+        id: "toxin_reduction",
+        title: "Reduce Environmental Toxin Exposure",
+        urgency: "SOON",
+        urgencyColor: C.orange,
+        shortDesc: "GSTM1 + GSTT1 deletions mean toxin avoidance has uniquely high ROI for your genotype",
+        why: "With both GSTM1 and GSTT1 completely deleted, your detoxification capacity for environmental toxins is materially reduced compared to most people. These two enzymes normally conjugate glutathione to a wide range of environmental chemicals, heavy metals, and metabolic byproducts for safe elimination. Without them, these compounds accumulate more readily. This means toxin avoidance has a much higher ROI for you than for someone with intact detox enzymes — it's not generic wellness advice, it's genetically specific priority.",
+        what: "Priority changes: (1) Replace plastic food storage with glass or stainless (BPA/phthalates processed by GSTM1). (2) Install a quality water filter — carbon block or reverse osmosis. (3) Replace non-stick Teflon cookware with cast iron, stainless, or ceramic. (4) Choose organic produce for the dirty dozen (strawberries, spinach, apples, grapes, peppers, cherries, peaches, pears, celery, tomatoes, nectarines, blueberries). (5) Minimize alcohol — heavily burdens the glutathione system your GSTM1 deletion already compromises.",
+        brands: "Water filter: Berkey, Brita pitcher (basic but better than nothing), or under-sink carbon block system",
+        timing: "Start with water and cookware — highest daily exposure items",
+        note: "You don't need to do all of these simultaneously. Prioritize by daily exposure: water and cooking vessels are the most impactful changes because they affect every meal every day.",
+        pathways: ["Detoxification", "Oxidative Stress", "Inflammation"],
+      },
+    ],
+  },
+  {
+    id: "monitoring",
+    icon: "⬡",
+    label: "Monitoring",
+    color: C.orange,
+    actions: [
+      {
+        id: "hrv_protocol",
+        title: "Use Oura HRV as Training Green-Light — Not Fixed Schedule",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "Recovery VERY HIGH + slower inflammatory resolution means HRV-guided training is genuinely important for your genotype",
+        why: "Your recovery pathway is VERY HIGH driven by IL-6 CC, IL-1+, MNSOD TT, GPX1 TT, and CRP GA. These variants mean you generate a more robust inflammatory response to training stress and resolve it more slowly than average. Training hard before your inflammatory response from the previous session has fully resolved does not make you fitter faster — for your genotype it compounds tissue stress and increases injury risk. HRV is the most practical proxy for autonomic recovery, which correlates strongly with inflammatory resolution.",
+        what: "HRV at or above your 7-day average → green light for hard training. HRV 10–15% below average → reduce intensity, active recovery only. HRV 20%+ below average → rest day, prioritize sleep and nutrition.",
+        brands: "Oura ring already in use — use the Readiness score and HRV trend in the app",
+        timing: "Check each morning before planning training intensity",
+        note: "Also track: Slow-wave sleep percentage (reflects GH secretion quality from Ipamorelin and glymphatic clearance relevant to APOE E4), and resting heart rate trend over weeks as a proxy for improving mitochondrial efficiency from Zone 2 training.",
+        pathways: ["Recovery", "Injury", "APOE E4", "Training Response"],
+      },
+      {
+        id: "homocysteine",
+        title: "Annual Homocysteine Test",
+        urgency: "ONGOING",
+        urgencyColor: C.accent,
+        shortDesc: "MTHFR 677 TT homozygous — homocysteine is your most direct methylation and vascular risk proxy",
+        why: "Homocysteine is the direct downstream marker of MTHFR enzyme function. Elevated homocysteine is directly toxic to endothelial cells — it damages vessel lining, reduces nitric oxide bioavailability, and accelerates atherosclerosis. Your MTHFR 677 TT homozygous status means your methylation cycle can tip toward homocysteine accumulation if B vitamins are suboptimal. Your last result (~9 umol/L) was reassuring and indicates your current methylfolate + methyl-B12 is working. But this must stay on annual rotation without exception — it is your most sensitive early warning system for both methylation and vascular health.",
+        what: "Serum homocysteine annually. Request alongside RBC folate and serum B12 for the full methylation picture.",
+        brands: "Dynacare or LifeLabs — standard requisition",
+        timing: "Annual — ideally at the same time each year for consistent comparison. Fasted preferred.",
+        note: "Longevity target is below 8 umol/L (tighter than the standard lab 'normal' of below 15). If homocysteine rises above 10: increase methylfolate dose, check B12, and consider adding Trimethylglycine (TMG/betaine) 500–1000mg/day as an alternative methylation donor.",
+        pathways: ["Methylation", "Vascular Health", "Brain Health"],
+      },
+      {
+        id: "dexa",
+        title: "Annual DEXA with Bone Mineral Density",
+        urgency: "ONGOING",
+        urgencyColor: C.accent,
+        shortDesc: "VDR triple variant + COL1A1 GG makes bone health monitoring more important for your genotype than average",
+        why: "Your bone health pathway is VERY HIGH. Your VDR triple variant affects bone mineral density regulation, and your COL1A1 GG variant affects bone quality (collagen matrix structure) independently of mineral density. This means standard DEXA T-scores may actually underestimate your bone fragility risk — T-score measures mineral density, not the collagen scaffold quality that COL1A1 affects. Annual monitoring with a note to your clinician about COL1A1 GG allows you to track actual bone health trajectory as your D3 + K2 + magnesium + resistance training protocol takes effect.",
+        what: "Annual DEXA scan including bone mineral density at lumbar spine and femoral neck — the two sites most affected by VDR variants. Track T-score and Z-score at each site.",
+        brands: "Same facility as your existing DEXA baseline for consistent measurement methodology",
+        timing: "Annual, consistent timing",
+        note: "If your existing DEXA baseline did not include bone mineral density (some body composition DEXAs skip it), request it specifically at your next scan. Also worth noting for your clinician: COL1A1 GG affects bone quality independent of T-score — this is a specific finding worth raising if you ever discuss bone health formally.",
+        pathways: ["Bone Health", "Collagen & Joints"],
+      },
+      {
+        id: "senolytics_ongoing",
+        title: "Senolytic Pulse — Every 8 Weeks",
+        urgency: "ONGOING",
+        urgencyColor: C.accent,
+        shortDesc: "Already in your protocol — coordinate timing with peptide cycles and Epithalon",
+        why: "Senescent cells — old, damaged cells that refuse to die but secrete inflammatory signals — accumulate faster in individuals with higher oxidative stress burden. Your GSTM1 DEL, GSTT1 DEL, and GPX1 TT variants mean you accumulate oxidative damage more readily, which accelerates senescent cell burden. Fisetin and Quercetin clear senescent cells without harming healthy ones. The 8-week pulse schedule is the most evidence-backed timing for senolytic protocols. Quercetin also provides direct anti-inflammatory benefit via mast cell stabilization, giving it dual function for your profile.",
+        what: "Fisetin 1000–1500mg + Quercetin 1000mg over 2 consecutive days, every 8 weeks. Take with a fatty meal — both are fat-soluble.",
+        brands: "Fisetin: Swanson, NOW Foods. Quercetin: Thorne, Pure Encapsulations",
+        timing: "During peptide off-weeks when possible. If running Epithalon in the same off-month, space senolytic pulse at least 1 week apart from Epithalon protocol.",
+        note: "You already have this in your protocol — the main action here is coordinating timing. Log your senolytic pulse in the Cycles tab to keep the countdown accurate.",
+        pathways: ["Senescence", "Inflammation", "Oxidative Stress", "Longevity"],
+      },
+    ],
+  },
+];
 
 // ─── Main App ──────────────────────────────────────────────────────────────
 export default function App() {
@@ -61,10 +405,18 @@ export default function App() {
   const [pdfResult, setPdfResult] = useState(null);
   const fileRef = useRef();
 
+  // Protocol tab state
+  const [activeCategory, setActiveCategory] = useState("supplements");
+  const [expandedAction, setExpandedAction] = useState(null);
+
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setData(JSON.parse(raw));
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (!parsed.protocolActions) parsed.protocolActions = {};
+        setData(parsed);
+      }
     } catch {}
     setLoading(false);
   }, []);
@@ -83,6 +435,13 @@ export default function App() {
   const toast$ = (msg, type = "ok") => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 2800);
+  };
+
+  const toggleActionComplete = (actionId) => {
+    update(d => {
+      if (!d.protocolActions) d.protocolActions = {};
+      d.protocolActions[actionId] = !d.protocolActions[actionId];
+    });
   };
 
   // ── Cycle calcs ──
@@ -109,6 +468,13 @@ export default function App() {
   const thisYear = new Date().getFullYear().toString();
   const workoutsYTD = data.workouts.filter(w => w.date?.startsWith(thisYear));
   const pct = Math.min(100, Math.round((workoutsYTD.length / (data.workoutGoal || 200)) * 100));
+
+  // ── Protocol stats ──
+  const allActions = PROTOCOL_CATEGORIES.flatMap(c => c.actions);
+  const totalActions = allActions.length;
+  const completedActions = allActions.filter(a => data.protocolActions?.[a.id]).length;
+  const protocolPct = Math.round((completedActions / totalActions) * 100);
+  const nextAction = allActions.find(a => !data.protocolActions?.[a.id]);
 
   // ── Actions ──
   const logWorkout = () => {
@@ -148,7 +514,6 @@ export default function App() {
         r.onerror = () => rej();
         r.readAsDataURL(file);
       });
-
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -164,7 +529,6 @@ export default function App() {
           }]
         })
       });
-
       const json = await resp.json();
       const raw = json.content?.find(c => c.type === "text")?.text || "[]";
       const cleaned = raw.replace(/```json|```/g, "").trim();
@@ -225,11 +589,11 @@ export default function App() {
     { id: "workout", icon: "◎", label: "Workout" },
     { id: "checkin", icon: "◉", label: "Check-in" },
     { id: "bio", icon: "◈", label: "Labs" },
+    { id: "protocol", icon: "⬡", label: "Protocol" },
   ];
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.text, fontFamily: "'DM Sans','Segoe UI',sans-serif", paddingBottom: 80 }}>
-      {/* Toast */}
       {toast && <div style={{ position: "fixed", top: 16, left: "50%", transform: "translateX(-50%)", background: toast.type === "err" ? C.red : C.accent, color: "#000", padding: "10px 22px", borderRadius: 50, fontWeight: 700, fontSize: 13, zIndex: 9999, whiteSpace: "nowrap" }}>{toast.msg}</div>}
 
       {/* Header */}
@@ -239,7 +603,6 @@ export default function App() {
         <span style={{ marginLeft: "auto", fontSize: 12, color: C.muted }}>{new Date().toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</span>
       </div>
 
-      {/* Content */}
       <div style={{ padding: "20px 16px", maxWidth: 600, margin: "0 auto" }}>
 
         {/* ── HOME ── */}
@@ -256,6 +619,47 @@ export default function App() {
                   <div style={{ height: "100%", width: "72%", background: `linear-gradient(90deg,${C.accent},${C.accentB})`, borderRadius: 3 }} />
                 </div>
               </div>
+            </div>
+
+            {/* ── GENETIC FLAGS ── */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Genetic Risk Flags</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {[
+                  { gene: "APOE E3/E4", label: "Neuroinflammation · Amyloid clearance · Cholesterol transport", color: C.red, icon: "🧠" },
+                  { gene: "MTHFR 677 TT", label: "Homozygous · ~70% methylation enzyme reduction", color: C.orange, icon: "⚡" },
+                  { gene: "GSTM1 DEL", label: "Complete deletion · Zero glutathione S-transferase M1", color: C.purple, icon: "🛡" },
+                ].map(f => (
+                  <div key={f.gene} style={{ background: C.surface, border: `1px solid ${f.color}30`, borderRadius: 12, padding: "12px 14px", display: "flex", alignItems: "center", gap: 12 }}>
+                    <span style={{ fontSize: 18 }}>{f.icon}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: f.color, letterSpacing: "0.04em" }}>{f.gene}</div>
+                      <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{f.label}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── PROTOCOL PROGRESS ── */}
+            <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, marginBottom: 16 }}
+              onClick={() => setTab("protocol")} >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                <span style={{ fontSize: 13, fontWeight: 600 }}>Protocol Actions</span>
+                <span style={{ fontSize: 22, fontWeight: 900, color: C.accent }}>{protocolPct}%</span>
+              </div>
+              <div style={{ height: 8, background: "#1a2038", borderRadius: 4, overflow: "hidden", marginBottom: 8 }}>
+                <div style={{ height: "100%", width: `${protocolPct}%`, background: `linear-gradient(90deg,${C.accent},${C.accentB})`, borderRadius: 4, transition: "width 0.6s" }} />
+              </div>
+              <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>{completedActions} of {totalActions} complete</div>
+              {nextAction && (
+                <div style={{ background: "#0a0e1a", borderRadius: 10, padding: "12px 14px", border: `1px solid ${C.accent}25` }}>
+                  <div style={{ fontSize: 10, color: C.accent, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>Next Priority</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{nextAction.title}</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 3 }}>{nextAction.shortDesc}</div>
+                </div>
+              )}
+              <div style={{ fontSize: 11, color: C.muted, marginTop: 10, textAlign: "center" }}>Tap to view full protocol →</div>
             </div>
 
             {/* Status grid */}
@@ -308,8 +712,6 @@ export default function App() {
         {tab === "cycles" && (
           <div>
             <PageTitle>Protocol Cycles</PageTitle>
-
-            {/* Peptides */}
             <Card>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
                 <span style={{ color: C.accent, fontSize: 18 }}>↻</span>
@@ -339,7 +741,6 @@ export default function App() {
               ) : <Empty>Set peptide start date in Settings</Empty>}
             </Card>
 
-            {/* Senolytics */}
             <Card>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
                 <span style={{ color: C.purple, fontSize: 18 }}>◎</span>
@@ -370,7 +771,6 @@ export default function App() {
               ) : <Empty>Set last senolytic date in Settings</Empty>}
             </Card>
 
-            {/* Cognitive */}
             <Card>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                 <span style={{ color: C.pink, fontSize: 18 }}>◉</span>
@@ -384,7 +784,6 @@ export default function App() {
               <p style={{ fontSize: 12, color: C.muted, margin: 0 }}>Use on low-performance days. Flag with Jack Health re: Foquest interaction.</p>
             </Card>
 
-            {/* Settings inline */}
             <Card>
               <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 14, color: C.text }}>⊙ Cycle Settings</div>
               <label style={Tx.label}>Annual workout goal</label>
@@ -411,7 +810,6 @@ export default function App() {
               </div>
               <div style={{ fontSize: 12, color: C.muted }}>{workoutsYTD.length} logged · {Math.max(0, data.workoutGoal - workoutsYTD.length)} to go</div>
             </div>
-
             <Card>
               <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 14 }}>Log a Workout</div>
               <label style={Tx.label}>Date</label>
@@ -422,7 +820,6 @@ export default function App() {
               <textarea style={{ ...Tx.input, height: 72, resize: "vertical" }} placeholder="Duration, sets, how you felt..." value={wNotes} onChange={e => setWNotes(e.target.value)} />
               <button style={Tx.btnPrimary} onClick={logWorkout}>Log Workout</button>
             </Card>
-
             <SectionTitle>History</SectionTitle>
             {data.workouts.length === 0
               ? <Empty>No workouts yet</Empty>
@@ -455,7 +852,6 @@ export default function App() {
               <textarea style={{ ...Tx.input, height: 90, resize: "vertical" }} placeholder="Notes — energy, mood, recovery, protocol observations..." value={ciNotes} onChange={e => setCiNotes(e.target.value)} />
               <button style={Tx.btnPrimary} onClick={logCheckin}>Save Check-In</button>
             </Card>
-
             <SectionTitle>Recent Check-Ins</SectionTitle>
             {data.checkins.length === 0
               ? <Empty>No check-ins yet</Empty>
@@ -474,8 +870,6 @@ export default function App() {
         {tab === "bio" && (
           <div>
             <PageTitle>Labs & Biomarkers</PageTitle>
-
-            {/* PDF Upload */}
             <Card>
               <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 6 }}>Upload Dynacare PDF</div>
               <p style={{ fontSize: 13, color: C.muted, marginBottom: 14 }}>Upload your lab PDF and AI will extract all values automatically.</p>
@@ -486,18 +880,14 @@ export default function App() {
                 {pdfLoading ? "Reading PDF..." : "📄 Upload Blood Test PDF"}
               </button>
             </Card>
-
-            {/* PDF Results Preview */}
             {pdfResult && pdfResult.length > 0 && (
               <PDFResultsPanel results={pdfResult} onImport={importPDFResults} onDismiss={() => setPdfResult(null)} />
             )}
-
-            {/* Manual entry */}
             <Card>
               <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 14 }}>Manual Entry</div>
               <label style={Tx.label}>Test type</label>
               <select style={Tx.input} value={bType} onChange={e => setBType(e.target.value)}>
-                {["GlycanAge","TruAge","Biological Age (Oura)","DEXA — Body Fat %","DEXA — Lean Mass (kg)","Testosterone (nmol/L)","Free Testosterone","Estradiol","SHBG","HRV (ms)","B1","B12","B5","Copper","Cortisol","Thyroid (TSH)","Other"].map(o => <option key={o}>{o}</option>)}
+                {["GlycanAge","TruAge","Biological Age (Oura)","DEXA — Body Fat %","DEXA — Lean Mass (kg)","Testosterone (nmol/L)","Free Testosterone","Estradiol","SHBG","HRV (ms)","B1","B12","B5","Copper","Cortisol","Thyroid (TSH)","ApoB","Homocysteine","hsCRP","25-OH-D","1,25-OH-D","Other"].map(o => <option key={o}>{o}</option>)}
               </select>
               <label style={Tx.label}>Value</label>
               <input style={Tx.input} placeholder="e.g. 34 or 5.2 mmol/L" value={bValue} onChange={e => setBValue(e.target.value)} />
@@ -507,7 +897,6 @@ export default function App() {
               <input style={Tx.input} placeholder="Reference range, context..." value={bNotes} onChange={e => setBNotes(e.target.value)} />
               <button style={Tx.btnPrimary} onClick={logBiomarker}>Save Result</button>
             </Card>
-
             <SectionTitle>History</SectionTitle>
             {data.biomarkers.length === 0
               ? <Empty>No results yet — upload a PDF or add manually</Empty>
@@ -522,6 +911,136 @@ export default function App() {
           </div>
         )}
 
+        {/* ── PROTOCOL ── */}
+        {tab === "protocol" && (
+          <div>
+            <PageTitle>Protocol Actions</PageTitle>
+
+            {/* Progress summary */}
+            <div style={{ background: "linear-gradient(135deg,#0a1e3d,#071428)", border: `1px solid #1e3060`, borderRadius: 16, padding: 20, marginBottom: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>Completion</span>
+                <span style={{ fontSize: 28, fontWeight: 900, color: C.accent }}>{protocolPct}%</span>
+              </div>
+              <div style={{ height: 8, background: "#1a2038", borderRadius: 4, overflow: "hidden", marginBottom: 8 }}>
+                <div style={{ height: "100%", width: `${protocolPct}%`, background: `linear-gradient(90deg,${C.accent},${C.accentB})`, borderRadius: 4, transition: "width 0.6s" }} />
+              </div>
+              <div style={{ fontSize: 12, color: C.muted }}>{completedActions} of {totalActions} actions complete · Based on 3x4 Genetics Blueprint</div>
+            </div>
+
+            {/* Category tabs */}
+            <div style={{ display: "flex", gap: 8, marginBottom: 16, overflowX: "auto", paddingBottom: 4 }}>
+              {PROTOCOL_CATEGORIES.map(cat => {
+                const catComplete = cat.actions.filter(a => data.protocolActions?.[a.id]).length;
+                const isActive = activeCategory === cat.id;
+                return (
+                  <button key={cat.id} onClick={() => setActiveCategory(cat.id)}
+                    style={{ flexShrink: 0, background: isActive ? cat.color + "20" : "#0a0e1a", border: `1px solid ${isActive ? cat.color + "60" : C.border}`, borderRadius: 10, padding: "8px 14px", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+                    <span style={{ fontSize: 16, color: isActive ? cat.color : C.muted }}>{cat.icon}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: isActive ? cat.color : C.muted, letterSpacing: "0.04em", whiteSpace: "nowrap" }}>{cat.label}</span>
+                    <span style={{ fontSize: 9, color: C.muted }}>{catComplete}/{cat.actions.length}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Actions list */}
+            {PROTOCOL_CATEGORIES.find(c => c.id === activeCategory)?.actions.map(action => {
+              const isComplete = data.protocolActions?.[action.id];
+              const isExpanded = expandedAction === action.id;
+              const cat = PROTOCOL_CATEGORIES.find(c => c.id === activeCategory);
+
+              return (
+                <div key={action.id} style={{ background: C.surface, border: `1px solid ${isComplete ? C.accent + "30" : C.border}`, borderRadius: 16, marginBottom: 12, overflow: "hidden", transition: "border-color 0.2s" }}>
+                  {/* Action header — tap to expand */}
+                  <div style={{ padding: "16px 16px 0", cursor: "pointer" }} onClick={() => setExpandedAction(isExpanded ? null : action.id)}>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+                      {/* Checkbox */}
+                      <button
+                        onClick={e => { e.stopPropagation(); toggleActionComplete(action.id); }}
+                        style={{ width: 24, height: 24, borderRadius: 6, border: `2px solid ${isComplete ? C.accent : C.muted}`, background: isComplete ? C.accent + "20" : "transparent", flexShrink: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", marginTop: 1 }}>
+                        {isComplete && <span style={{ color: C.accent, fontSize: 13, fontWeight: 900 }}>✓</span>}
+                      </button>
+
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "flex-start", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: isComplete ? C.muted : C.text, textDecoration: isComplete ? "line-through" : "none", flex: 1, minWidth: 160 }}>
+                            {action.title}
+                          </span>
+                          <span style={{ fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 20, background: action.urgencyColor + "20", color: action.urgencyColor, border: `1px solid ${action.urgencyColor}40`, letterSpacing: "0.08em", flexShrink: 0 }}>
+                            {action.urgency}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.5 }}>{action.shortDesc}</div>
+                      </div>
+                    </div>
+
+                    {/* Pathways */}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>
+                      {action.pathways.map(p => (
+                        <span key={p} style={{ fontSize: 9, padding: "2px 7px", borderRadius: 20, background: "#0a0e1a", color: C.muted, border: `1px solid ${C.border}`, letterSpacing: "0.04em" }}>{p}</span>
+                      ))}
+                    </div>
+
+                    {/* Expand toggle */}
+                    <div style={{ borderTop: `1px solid ${C.border}`, padding: "10px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                      <span style={{ fontSize: 11, color: C.muted, letterSpacing: "0.06em" }}>{isExpanded ? "HIDE DETAILS" : "TAP FOR FULL DETAILS"}</span>
+                      <span style={{ color: C.muted, fontSize: 12, transform: isExpanded ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s", display: "inline-block" }}>▼</span>
+                    </div>
+                  </div>
+
+                  {/* Expanded detail panel */}
+                  {isExpanded && (
+                    <div style={{ borderTop: `1px solid ${C.border}`, background: "#0a0e1a" }}>
+
+                      {/* Why */}
+                      <div style={{ padding: "16px 16px 0" }}>
+                        <div style={{ fontSize: 10, color: cat.color, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>Why This Matters For You</div>
+                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7 }}>{action.why}</div>
+                      </div>
+
+                      {/* What */}
+                      <div style={{ padding: "14px 16px 0" }}>
+                        <div style={{ fontSize: 10, color: C.accentB, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>What To Take / Do</div>
+                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: "pre-line" }}>{action.what}</div>
+                      </div>
+
+                      {/* Timing */}
+                      <div style={{ padding: "14px 16px 0" }}>
+                        <div style={{ fontSize: 10, color: C.accent, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>Timing</div>
+                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7 }}>{action.timing}</div>
+                      </div>
+
+                      {/* Brands */}
+                      <div style={{ padding: "14px 16px 0" }}>
+                        <div style={{ fontSize: 10, color: C.purple, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 8 }}>Brands / Sources</div>
+                        <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7 }}>{action.brands}</div>
+                      </div>
+
+                      {/* Note */}
+                      {action.note && (
+                        <div style={{ margin: "14px 16px 0", background: C.orange + "10", border: `1px solid ${C.orange}30`, borderRadius: 10, padding: "12px 14px" }}>
+                          <div style={{ fontSize: 10, color: C.orange, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 6 }}>⚑ Important Note</div>
+                          <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{action.note}</div>
+                        </div>
+                      )}
+
+                      {/* Mark complete button */}
+                      <div style={{ padding: 16 }}>
+                        <button
+                          style={{ ...isComplete ? Tx.btnSmall : Tx.btnPrimary, width: "100%" }}
+                          onClick={() => toggleActionComplete(action.id)}>
+                          {isComplete ? "✓ Completed — Tap to Undo" : "Mark as Complete"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
       </div>
 
       {/* Bottom nav */}
@@ -529,7 +1048,7 @@ export default function App() {
         {tabs.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
             style={{ flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "6px 0", color: tab === t.id ? C.accent : C.muted }}>
-            <span style={{ fontSize: 18 }}>{t.icon}</span>
+            <span style={{ fontSize: tab === "protocol" && t.id === "protocol" ? 14 : 18 }}>{t.id === "protocol" ? "⬢" : t.icon}</span>
             <span style={{ fontSize: 10, fontWeight: tab === t.id ? 700 : 500, letterSpacing: "0.04em" }}>{t.label}</span>
           </button>
         ))}
@@ -631,8 +1150,8 @@ const Tx = {
   input: { display: "block", width: "100%", background: "#0a0e1a", border: `1px solid ${C.border}`, borderRadius: 10, color: C.text, padding: "11px 14px", fontSize: 14, marginBottom: 8, outline: "none", boxSizing: "border-box", fontFamily: "inherit" },
   btnPrimary: { background: `linear-gradient(135deg,${C.accent},${C.accentB})`, color: "#000", border: "none", borderRadius: 10, padding: "13px 24px", fontSize: 14, fontWeight: 700, cursor: "pointer", width: "100%", letterSpacing: "0.02em" },
   btnSmall: { background: "#1a2038", color: C.text, border: `1px solid ${C.border}`, borderRadius: 8, padding: "9px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", width: "100%" },
-  
 };
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
