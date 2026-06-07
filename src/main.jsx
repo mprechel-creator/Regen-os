@@ -29,7 +29,7 @@ const fmtDate = d => d ? new Date(d + "T12:00:00").toLocaleDateString("en-CA", {
 const C = {
   bg: "#070b14", surface: "#0d1220", border: "#1a2038", accent: "#00e5a0",
   accentB: "#3d9eff", purple: "#a78bfa", pink: "#f472b6", orange: "#f0a500",
-  red: "#ff6b6b", text: "#e2e8f0", muted: "#4a5568", subtle: "#8892a4",
+  red: "#ff6b6b", text: "#e2e8f0", muted: "#7a8ba8", subtle: "#a8b4c4",
 };
 
 // ─── Supplement Stack ──────────────────────────────────────────────────────
@@ -692,7 +692,6 @@ export default function App() {
   const tabs = [
     { id: "home", icon: "⬡", label: "Home" },
     { id: "supps", icon: "◈", label: "Supps" },
-    { id: "cycles", icon: "↻", label: "Cycles" },
     { id: "workout", icon: "◎", label: "Workout" },
     { id: "checkin", icon: "◉", label: "Check-in" },
     { id: "bio", icon: "⬡", label: "Labs" },
