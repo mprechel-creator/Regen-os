@@ -14,6 +14,8 @@ const defaultData = {
   protocolActions: {},
   suppLogs: {},
   suppActive: {},
+  proteinGoal: 180,
+  nutritionLogs: {}, // { "YYYY-MM-DD": { slotId: true, ... } }
 };
 
 // ─── Constants ─────────────────────────────────────────────────────────────
@@ -111,6 +113,65 @@ const PHASES = [
   { id: 3, label: "Phase 3 · Energy & Cognitive", icon: "③", color: C.orange,
     sublabel: "Weeks 9+ · introduce one at a time", desc: "The compounds most likely to affect sleep or stimulation given your COMT GA slow-clearance. Add one per week, watch your Oura data. Suggested order: NMN → Alpha-GPC → Resveratrol → Citrulline → Lion's Mane." },
 ];
+
+// ─── Nutrition / Protein Schedule ────────────────────────────────────────────
+// Day types map to the weekly training split:
+//   Lift days  → Tue / Thu / Sun   (weight lifting 11am)
+//   Cardio days→ Mon / Wed / Fri   (cardio 5:30–6am)
+//   Rest day   → Sat
+// getDayType() resolves the current weekday to one of these.
+const PROTEIN_GOAL_DEFAULT = 180; // 1g per lb bodyweight (180lb)
+
+const NUTRITION_PLANS = {
+  lift: {
+    id: "lift", label: "Lifting Day", icon: "🏋", color: C.pink,
+    sublabel: "Tue · Thu · Sun — weights 11am",
+    note: "ISO100 hydrolyzed WPI pre-lift puts leucine at peak right as you hit working sets — maximizes mTOR activation. MRE held to the afternoon slot where absorption speed doesn't matter.",
+    slots: [
+      { id: "l1", time: "7:00am", label: "Breakfast", detail: "Eggs · Greek yogurt · meat", source: "whole", protein: 40 },
+      { id: "l2", time: "10:30am", label: "Pre-Workout Shake", detail: "ISO100 (1 scoop)", source: "iso100", protein: 25 },
+      { id: "l3", time: "12:30pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 45 },
+      { id: "l4", time: "4:00pm", label: "Afternoon Shake", detail: "Redcon1 MRE", source: "mre", protein: 47 },
+      { id: "l5", time: "7:00pm", label: "Dinner", detail: "Whole food", source: "whole", protein: 40 },
+    ],
+  },
+  cardio: {
+    id: "cardio", label: "Cardio Day", icon: "🏃", color: C.accentB,
+    sublabel: "Mon · Wed · Fri — cardio 5:30–6am",
+    note: "Half-scoop ISO100 pre-cardio protects muscle tissue during near-fasted morning work without GI load at 5:30am. Real food carries the rest of the day.",
+    slots: [
+      { id: "c1", time: "5:15am", label: "Pre-Cardio", detail: "ISO100 (½ scoop)", source: "iso100", protein: 13 },
+      { id: "c2", time: "8:00am", label: "Breakfast", detail: "Whole food", source: "whole", protein: 40 },
+      { id: "c3", time: "12:30pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 45 },
+      { id: "c4", time: "4:00pm", label: "Afternoon Shake", detail: "Redcon1 MRE", source: "mre", protein: 47 },
+      { id: "c5", time: "7:00pm", label: "Dinner", detail: "Whole food", source: "whole", protein: 40 },
+    ],
+  },
+  rest: {
+    id: "rest", label: "Rest Day", icon: "🛌", color: C.purple,
+    sublabel: "Sat — recovery",
+    note: "No fasted training window to protect, so protein leans on whole-food meals for micronutrient density — better aligned with the cellular work than a powder-heavy day.",
+    slots: [
+      { id: "r1", time: "8:00am", label: "Breakfast", detail: "Whole food", source: "whole", protein: 45 },
+      { id: "r2", time: "12:30pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 50 },
+      { id: "r3", time: "4:00pm", label: "Afternoon Shake", detail: "Redcon1 MRE", source: "mre", protein: 47 },
+      { id: "r4", time: "7:00pm", label: "Dinner", detail: "Whole food", source: "whole", protein: 45 },
+    ],
+  },
+};
+
+// JS getDay(): 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
+const DAY_TYPE_BY_WEEKDAY = ["lift", "cardio", "lift", "cardio", "lift", "cardio", "rest"];
+const getDayType = (dateStr) => {
+  const d = dateStr ? new Date(dateStr + "T12:00:00") : new Date();
+  return DAY_TYPE_BY_WEEKDAY[d.getDay()];
+};
+
+const PROTEIN_SOURCE_META = {
+  iso100: { label: "ISO100", color: C.accent },
+  mre: { label: "MRE", color: C.orange },
+  whole: { label: "Whole food", color: C.subtle },
+};
 
 
 // ─── Protocol Actions Data ──────────────────────────────────────────────────
@@ -503,6 +564,8 @@ export default function App() {
         if (!parsed.protocolActions) parsed.protocolActions = {};
         if (!parsed.suppLogs) parsed.suppLogs = {};
         if (!parsed.suppActive) parsed.suppActive = {};
+        if (!parsed.nutritionLogs) parsed.nutritionLogs = {};
+        if (!parsed.proteinGoal) parsed.proteinGoal = PROTEIN_GOAL_DEFAULT;
         setData(parsed);
       }
     } catch {}
@@ -617,31 +680,41 @@ export default function App() {
       const b64 = await new Promise((res, rej) => {
         const r = new FileReader();
         r.onload = () => res(r.result.split(",")[1]);
-        r.onerror = () => rej();
+        r.onerror = () => rej(new Error("File read failed"));
         r.readAsDataURL(file);
       });
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "anthropic-beta": "pdfs-2024-09-25",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
+          max_tokens: 4000,
           messages: [{
             role: "user",
             content: [
               { type: "document", source: { type: "base64", media_type: "application/pdf", data: b64 } },
-              { type: "text", text: `This is a Dynacare blood test report. Extract ALL lab values and return ONLY a JSON array, no markdown, no explanation. Format: [{"name":"Test Name","value":"123.4","unit":"mmol/L","reference":"3.5-5.0","flag":"H or L or normal","date":"YYYY-MM-DD"}]. Use the collection date for date field. If date not found use today ${todayStr()}. Include every single test result you find.` }
+              { type: "text", text: `This is a blood test report. Extract ALL lab values and return ONLY a valid JSON array — no markdown, no backticks, no explanation, nothing else. Format exactly: [{"name":"Test Name","value":"123.4","unit":"mmol/L","reference":"3.5-5.0","flag":"H or L or normal","date":"YYYY-MM-DD"}]. Use the collection date for the date field. If no date found, use ${todayStr()}. Include every single test result you can find.` }
             ]
           }]
         })
       });
       const json = await resp.json();
+      if (json.error) throw new Error(json.error.message || "API error");
       const raw = json.content?.find(c => c.type === "text")?.text || "[]";
       const cleaned = raw.replace(/```json|```/g, "").trim();
       const results = JSON.parse(cleaned);
-      setPdfResult(results);
+      if (!Array.isArray(results) || results.length === 0) {
+        toast$("No results found in PDF", "err");
+      } else {
+        setPdfResult(results);
+      }
     } catch (err) {
-      toast$("Could not read PDF — try again", "err");
+      console.error("PDF error:", err);
+      toast$(`Error: ${err.message || "Could not read PDF"}`, "err");
     }
     setPdfLoading(false);
     e.target.value = "";
@@ -693,6 +766,7 @@ export default function App() {
     { id: "home", icon: "⬡", label: "Home" },
     { id: "supps", icon: "◈", label: "Supps" },
     { id: "workout", icon: "◎", label: "Workout" },
+    { id: "nutrition", icon: "⊙", label: "Fuel" },
     { id: "checkin", icon: "◉", label: "Check-in" },
     { id: "bio", icon: "⬡", label: "Labs" },
     { id: "protocol", icon: "⬢", label: "Protocol" },
@@ -1085,6 +1159,104 @@ export default function App() {
               ))}
           </div>
         )}
+
+        {/* ── NUTRITION / FUEL ── */}
+        {tab === "nutrition" && (() => {
+          const today = todayStr();
+          const dayType = getDayType(today);
+          const plan = NUTRITION_PLANS[dayType];
+          const goal = data.proteinGoal || PROTEIN_GOAL_DEFAULT;
+          const todayLog = data.nutritionLogs[today] || {};
+          const planTotal = plan.slots.reduce((s, x) => s + x.protein, 0);
+          const consumed = plan.slots.reduce((s, x) => s + (todayLog[x.id] ? x.protein : 0), 0);
+          const goalPct = Math.min(100, Math.round((consumed / goal) * 100));
+
+          const toggleSlot = (slotId) => update(d => {
+            if (!d.nutritionLogs[today]) d.nutritionLogs[today] = {};
+            if (d.nutritionLogs[today][slotId]) delete d.nutritionLogs[today][slotId];
+            else d.nutritionLogs[today][slotId] = true;
+          });
+
+          return (
+            <div>
+              <PageTitle>Fuel</PageTitle>
+
+              {/* Daily protein hero */}
+              <div style={{ background: "linear-gradient(135deg,#1a0e2e,#0d1220)", border: `1px solid ${plan.color}40`, borderRadius: 20, padding: 24, marginBottom: 16 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <div>
+                    <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>Today · Protein</div>
+                    <div style={{ fontSize: 44, fontWeight: 900, color: plan.color, lineHeight: 1, letterSpacing: "-0.03em" }}>
+                      {consumed}<span style={{ fontSize: 20, color: C.muted, fontWeight: 700 }}> / {goal}g</span>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 28 }}>{plan.icon}</div>
+                    <div style={{ fontSize: 12, color: plan.color, fontWeight: 700, marginTop: 2 }}>{plan.label}</div>
+                  </div>
+                </div>
+                <div style={{ height: 8, background: "#1a2038", borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
+                  <div style={{ height: "100%", width: `${goalPct}%`, background: `linear-gradient(90deg,${plan.color},${C.purple})`, borderRadius: 4, transition: "width .3s" }} />
+                </div>
+                <div style={{ fontSize: 12, color: C.muted }}>
+                  {goalPct}% of goal · plan delivers {planTotal}g · {Math.max(0, goal - consumed)}g to go
+                </div>
+              </div>
+
+              <div style={{ fontSize: 12, color: C.subtle, lineHeight: 1.5, padding: "0 4px 4px", marginBottom: 4 }}>{plan.note}</div>
+
+              <SectionTitle>{plan.sublabel}</SectionTitle>
+              {plan.slots.map(slot => {
+                const done = !!todayLog[slot.id];
+                const src = PROTEIN_SOURCE_META[slot.source];
+                return (
+                  <div key={slot.id} onClick={() => toggleSlot(slot.id)}
+                    style={{ display: "flex", alignItems: "center", gap: 12, background: done ? src.color + "12" : C.surface, border: `1px solid ${done ? src.color + "50" : C.border}`, borderRadius: 14, padding: "13px 16px", marginBottom: 8, cursor: "pointer", transition: "all .15s" }}>
+                    <div style={{ width: 22, height: 22, borderRadius: 7, border: `2px solid ${done ? src.color : C.muted}`, background: done ? src.color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      {done && <span style={{ color: "#000", fontSize: 13, fontWeight: 900 }}>✓</span>}
+                    </div>
+                    <div style={{ minWidth: 62 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: done ? C.text : C.subtle }}>{slot.time}</div>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>{slot.label}</div>
+                      <div style={{ fontSize: 11, color: C.muted }}>{slot.detail}</div>
+                    </div>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      <div style={{ fontSize: 16, fontWeight: 800, color: done ? src.color : C.muted }}>{slot.protein}g</div>
+                      <div style={{ fontSize: 9, color: src.color, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700 }}>{src.label}</div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <SectionTitle>Weekly Structure</SectionTitle>
+              {Object.values(NUTRITION_PLANS).map(p => {
+                const t = p.slots.reduce((s, x) => s + x.protein, 0);
+                const isToday = p.id === dayType;
+                return (
+                  <Row key={p.id}>
+                    <span style={{ fontSize: 18, minWidth: 26 }}>{p.icon}</span>
+                    <div style={{ flex: 1 }}>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: isToday ? p.color : C.text }}>{p.label}</span>
+                      {isToday && <span style={{ fontSize: 9, color: p.color, marginLeft: 8, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700 }}>Today</span>}
+                      <div style={{ fontSize: 11, color: C.muted }}>{p.sublabel}</div>
+                    </div>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: p.color }}>{t}g</span>
+                  </Row>
+                );
+              })}
+
+              <SectionTitle>Protein Target</SectionTitle>
+              <Card>
+                <label style={Tx.label}>Daily goal (grams)</label>
+                <input style={Tx.input} type="number" value={data.proteinGoal || PROTEIN_GOAL_DEFAULT}
+                  onChange={e => update(d => { d.proteinGoal = parseInt(e.target.value) || PROTEIN_GOAL_DEFAULT; })} />
+                <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>Set to 1g per lb bodyweight — currently 180g for 180lb.</div>
+              </Card>
+            </div>
+          );
+        })()}
 
         {/* ── CHECK-IN ── */}
         {tab === "checkin" && (
