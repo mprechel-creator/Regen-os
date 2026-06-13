@@ -117,45 +117,49 @@ const PHASES = [
 // ─── Nutrition / Protein Schedule ────────────────────────────────────────────
 // Day types map to the weekly training split:
 //   Lift days  → Tue / Thu / Sun   (weight lifting 11am)
-//   Cardio days→ Mon / Wed / Fri   (cardio 5:30–6am)
+//   Cardio days→ Mon / Wed / Fri   (fasted Zone 2, electrolytes only)
 //   Rest day   → Sat
+// Aligned to OwnIt playbook: 7am breakfast (within 1hr waking, cortisol support),
+// 11am training, 1pm lunch (post-workout nutrient density), 3:30pm light bridge,
+// 6pm dinner (anchor, completed early for 4.5hr digestive window before 10:30 bed).
 // getDayType() resolves the current weekday to one of these.
 const PROTEIN_GOAL_DEFAULT = 180; // 1g per lb bodyweight (180lb)
+const CARB_CEILING = 200; // staying under 200g/day
 
 const NUTRITION_PLANS = {
   lift: {
     id: "lift", label: "Lifting Day", icon: "🏋", color: C.pink,
     sublabel: "Tue · Thu · Sun — weights 11am",
-    note: "ISO100 hydrolyzed WPI pre-lift puts leucine at peak right as you hit working sets — maximizes mTOR activation. MRE held to the afternoon slot where absorption speed doesn't matter.",
+    note: "Training day is where MRE earns its place — the carbs fuel glycogen for your 11am block and post-workout recovery, where they're actually useful rather than a tax. Protein lands within an hour of waking to support your cortisol awakening response.",
     slots: [
-      { id: "l1", time: "7:00am", label: "Breakfast", detail: "Eggs · Greek yogurt · meat", source: "whole", protein: 40 },
-      { id: "l2", time: "10:30am", label: "Pre-Workout Shake", detail: "ISO100 (1 scoop)", source: "iso100", protein: 25 },
-      { id: "l3", time: "12:30pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 45 },
-      { id: "l4", time: "4:00pm", label: "Afternoon Shake", detail: "Redcon1 MRE", source: "mre", protein: 47 },
-      { id: "l5", time: "7:00pm", label: "Dinner", detail: "Whole food", source: "whole", protein: 40 },
+      { id: "l1", time: "7:00am", label: "Breakfast", detail: "Redcon1 MRE (optional swap for eggs + Greek yogurt)", source: "mre", protein: 47, carbs: 47 },
+      { id: "l2", time: "11:00am", label: "Training Block", detail: "Weights — fuel within 60min after", source: "none", protein: 0, carbs: 0 },
+      { id: "l3", time: "1:00pm", label: "Lunch (post-workout)", detail: "Lean protein + whole food", source: "whole", protein: 53, carbs: 45 },
+      { id: "l4", time: "3:30pm", label: "Bridge Snack", detail: "ISO100 (1 scoop) or low-carb bar", source: "iso100", protein: 25, carbs: 2 },
+      { id: "l5", time: "6:00pm", label: "Dinner (anchor)", detail: "Whole food — biggest meal", source: "whole", protein: 60, carbs: 55 },
     ],
   },
   cardio: {
     id: "cardio", label: "Cardio Day", icon: "🏃", color: C.accentB,
-    sublabel: "Mon · Wed · Fri — cardio 5:30–6am",
-    note: "Half-scoop ISO100 pre-cardio protects muscle tissue during near-fasted morning work without GI load at 5:30am. Real food carries the rest of the day.",
+    sublabel: "Mon · Wed · Fri — fasted Zone 2 6am",
+    note: "Fasted Zone 2 with LMNT electrolytes only — no pre-cardio protein. First protein lands at 7am breakfast within an hour of waking, which is exactly what supports your blunted cortisol awakening response. ISO100 keeps breakfast lean on a non-training day.",
     slots: [
-      { id: "c1", time: "5:15am", label: "Pre-Cardio", detail: "ISO100 (½ scoop)", source: "iso100", protein: 13 },
-      { id: "c2", time: "8:00am", label: "Breakfast", detail: "Whole food", source: "whole", protein: 40 },
-      { id: "c3", time: "12:30pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 45 },
-      { id: "c4", time: "4:00pm", label: "Afternoon Shake", detail: "Redcon1 MRE", source: "mre", protein: 47 },
-      { id: "c5", time: "7:00pm", label: "Dinner", detail: "Whole food", source: "whole", protein: 40 },
+      { id: "c1", time: "6:00am", label: "Fasted Cardio", detail: "LMNT electrolytes only", source: "none", protein: 0, carbs: 0 },
+      { id: "c2", time: "7:30am", label: "Breakfast", detail: "ISO100 + eggs / Greek yogurt", source: "iso100", protein: 50, carbs: 15 },
+      { id: "c3", time: "1:00pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 55, carbs: 45 },
+      { id: "c4", time: "3:30pm", label: "Bridge Snack", detail: "½ scoop ISO100 or low-carb bar", source: "iso100", protein: 15, carbs: 1 },
+      { id: "c5", time: "6:00pm", label: "Dinner (anchor)", detail: "Whole food — biggest meal", source: "whole", protein: 65, carbs: 50 },
     ],
   },
   rest: {
     id: "rest", label: "Rest Day", icon: "🛌", color: C.purple,
     sublabel: "Sat — recovery",
-    note: "No fasted training window to protect, so protein leans on whole-food meals for micronutrient density — better aligned with the cellular work than a powder-heavy day.",
+    note: "No training to fuel, so protein leans on whole-food meals for micronutrient density — better aligned with the cellular work than a powder-heavy day. Still protein at breakfast for the cortisol response.",
     slots: [
-      { id: "r1", time: "8:00am", label: "Breakfast", detail: "Whole food", source: "whole", protein: 45 },
-      { id: "r2", time: "12:30pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 50 },
-      { id: "r3", time: "4:00pm", label: "Afternoon Shake", detail: "Redcon1 MRE", source: "mre", protein: 47 },
-      { id: "r4", time: "7:00pm", label: "Dinner", detail: "Whole food", source: "whole", protein: 45 },
+      { id: "r1", time: "7:30am", label: "Breakfast", detail: "Eggs · Greek yogurt · whole food", source: "whole", protein: 50, carbs: 25 },
+      { id: "r2", time: "1:00pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 50, carbs: 45 },
+      { id: "r3", time: "3:30pm", label: "Bridge Snack", detail: "ISO100 (1 scoop) or whole-food snack", source: "iso100", protein: 25, carbs: 2 },
+      { id: "r4", time: "6:00pm", label: "Dinner (anchor)", detail: "Whole food — biggest meal", source: "whole", protein: 60, carbs: 55 },
     ],
   },
 };
@@ -171,6 +175,7 @@ const PROTEIN_SOURCE_META = {
   iso100: { label: "ISO100", color: C.accent },
   mre: { label: "MRE", color: C.orange },
   whole: { label: "Whole food", color: C.subtle },
+  none: { label: "—", color: C.muted },
 };
 
 
@@ -1170,12 +1175,17 @@ export default function App() {
           const planTotal = plan.slots.reduce((s, x) => s + x.protein, 0);
           const consumed = plan.slots.reduce((s, x) => s + (todayLog[x.id] ? x.protein : 0), 0);
           const goalPct = Math.min(100, Math.round((consumed / goal) * 100));
+          const planCarbs = plan.slots.reduce((s, x) => s + (x.carbs || 0), 0);
+          const carbPct = Math.min(100, Math.round((planCarbs / CARB_CEILING) * 100));
 
-          const toggleSlot = (slotId) => update(d => {
-            if (!d.nutritionLogs[today]) d.nutritionLogs[today] = {};
-            if (d.nutritionLogs[today][slotId]) delete d.nutritionLogs[today][slotId];
-            else d.nutritionLogs[today][slotId] = true;
-          });
+          const toggleSlot = (slot) => {
+            if (slot.source === "none") return; // training/cardio events aren't loggable
+            update(d => {
+              if (!d.nutritionLogs[today]) d.nutritionLogs[today] = {};
+              if (d.nutritionLogs[today][slot.id]) delete d.nutritionLogs[today][slot.id];
+              else d.nutritionLogs[today][slot.id] = true;
+            });
+          };
 
           return (
             <div>
@@ -1201,31 +1211,45 @@ export default function App() {
                 <div style={{ fontSize: 12, color: C.muted }}>
                   {goalPct}% of goal · plan delivers {planTotal}g · {Math.max(0, goal - consumed)}g to go
                 </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+                  <span style={{ fontSize: 11, color: C.muted, minWidth: 38 }}>Carbs</span>
+                  <div style={{ flex: 1, height: 5, background: "#1a2038", borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${carbPct}%`, background: planCarbs > CARB_CEILING ? C.orange : C.accentB, borderRadius: 3 }} />
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: planCarbs > CARB_CEILING ? C.orange : C.subtle }}>{planCarbs} / {CARB_CEILING}g</span>
+                </div>
               </div>
 
               <div style={{ fontSize: 12, color: C.subtle, lineHeight: 1.5, padding: "0 4px 4px", marginBottom: 4 }}>{plan.note}</div>
 
               <SectionTitle>{plan.sublabel}</SectionTitle>
               {plan.slots.map(slot => {
-                const done = !!todayLog[slot.id];
+                const isEvent = slot.source === "none";
+                const done = !isEvent && !!todayLog[slot.id];
                 const src = PROTEIN_SOURCE_META[slot.source];
                 return (
-                  <div key={slot.id} onClick={() => toggleSlot(slot.id)}
-                    style={{ display: "flex", alignItems: "center", gap: 12, background: done ? src.color + "12" : C.surface, border: `1px solid ${done ? src.color + "50" : C.border}`, borderRadius: 14, padding: "13px 16px", marginBottom: 8, cursor: "pointer", transition: "all .15s" }}>
-                    <div style={{ width: 22, height: 22, borderRadius: 7, border: `2px solid ${done ? src.color : C.muted}`, background: done ? src.color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      {done && <span style={{ color: "#000", fontSize: 13, fontWeight: 900 }}>✓</span>}
-                    </div>
-                    <div style={{ minWidth: 62 }}>
+                  <div key={slot.id} onClick={() => toggleSlot(slot)}
+                    style={{ display: "flex", alignItems: "center", gap: 12, background: done ? src.color + "12" : (isEvent ? "#0a0e1a" : C.surface), border: `1px solid ${done ? src.color + "50" : C.border}`, borderRadius: 14, padding: "13px 16px", marginBottom: 8, cursor: isEvent ? "default" : "pointer", opacity: isEvent ? 0.72 : 1, transition: "all .15s" }}>
+                    {isEvent ? (
+                      <div style={{ width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 14 }}>{plan.icon}</div>
+                    ) : (
+                      <div style={{ width: 22, height: 22, borderRadius: 7, border: `2px solid ${done ? src.color : C.muted}`, background: done ? src.color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        {done && <span style={{ color: "#000", fontSize: 13, fontWeight: 900 }}>✓</span>}
+                      </div>
+                    )}
+                    <div style={{ minWidth: 56 }}>
                       <div style={{ fontSize: 12, fontWeight: 700, color: done ? C.text : C.subtle }}>{slot.time}</div>
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>{slot.label}</div>
                       <div style={{ fontSize: 11, color: C.muted }}>{slot.detail}</div>
                     </div>
-                    <div style={{ textAlign: "right", flexShrink: 0 }}>
-                      <div style={{ fontSize: 16, fontWeight: 800, color: done ? src.color : C.muted }}>{slot.protein}g</div>
-                      <div style={{ fontSize: 9, color: src.color, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700 }}>{src.label}</div>
-                    </div>
+                    {!isEvent && (
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                        <div style={{ fontSize: 16, fontWeight: 800, color: done ? src.color : C.muted }}>{slot.protein}g</div>
+                        <div style={{ fontSize: 9, color: C.muted }}>{slot.carbs || 0}g carb</div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -1233,6 +1257,7 @@ export default function App() {
               <SectionTitle>Weekly Structure</SectionTitle>
               {Object.values(NUTRITION_PLANS).map(p => {
                 const t = p.slots.reduce((s, x) => s + x.protein, 0);
+                const c = p.slots.reduce((s, x) => s + (x.carbs || 0), 0);
                 const isToday = p.id === dayType;
                 return (
                   <Row key={p.id}>
@@ -1242,7 +1267,10 @@ export default function App() {
                       {isToday && <span style={{ fontSize: 9, color: p.color, marginLeft: 8, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700 }}>Today</span>}
                       <div style={{ fontSize: 11, color: C.muted }}>{p.sublabel}</div>
                     </div>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: p.color }}>{t}g</span>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: p.color }}>{t}g <span style={{ fontSize: 10, color: C.muted, fontWeight: 600 }}>protein</span></div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: c > CARB_CEILING ? C.orange : C.subtle }}>{c}g carb</div>
+                    </div>
                   </Row>
                 );
               })}
