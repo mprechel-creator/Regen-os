@@ -65,7 +65,8 @@ const SUPPLEMENTS = [
   { id: "omega3", time: "meals", phase: 1, label: "EPA+DHA Omega-3", dose: "2–3g EPA+DHA combined", form: "Softgel (triglyceride form)", status: "pending", source: "protocol",
     why: "FADS1 GT + FADS2 CG variants mean you convert plant-based ALA to EPA/DHA poorly. Combined with APOE E4 neuroinflammation risk, marine-source omega-3 is essential — not optional. E4 carriers show greater cognitive benefit from omega-3 specifically.",
     target: "Inflammation · APOE E4 · Vascular Health · Mood & Behavior",
-    note: "Triglyceride form (rTG) has ~70% better bioavailability. Do not rely on flaxseed — FADS variants impair ALA conversion. Phase 1 foundation — nothing stimulating, safe to start first." },
+    note: "Triglyceride form (rTG) has ~70% better bioavailability. Do not rely on flaxseed — FADS variants impair ALA conversion. Phase 1 foundation — nothing stimulating, safe to start first.",
+    intolerance: { status: "Paused — clinical review", text: "Persistent watery + gassy GI response even at a single softgel taken with food — a fat-malabsorption pattern, not a dose-load issue (splitting the dose and pairing with a fat anchor did not resolve it). Paused as a clean test and to remove a confounder. Cross-reference: elevated lipase (~213 U/L, gating). Flagged for Jack Health. Do not reintroduce or swap omega-3 form until the lipase question is resolved." } },
   { id: "resveratrol", time: "meals", phase: 3, label: "Trans-Resveratrol", dose: "250–500mg", form: "Capsule", status: "pending", source: "protocol",
     why: "Activates SIRT1, upregulates BDNF, reduces amyloid aggregation (APOE E4 mechanism), and activates eNOS for vascular health (ENOS GT variant). One compound addressing both APOE E4 and vascular VERY HIGH simultaneously.",
     target: "APOE E4 · Vascular Health · Memory & Brain · Longevity",
@@ -1577,6 +1578,15 @@ function SuppCard({ supp, accent, logged, streak, isExp, onToggleLog, onExpand, 
               <div style={{ fontSize: 9, color: C.orange, fontWeight: 700 }}>{streak}d</div>
             </div>}
           </div>
+          {supp.intolerance && (
+            <div style={{ background: C.red + "12", border: `1px solid ${C.red}45`, borderRadius: 8, padding: "10px 12px", marginBottom: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                <span style={{ fontSize: 12 }}>⚠️</span>
+                <span style={{ fontSize: 10, color: C.red, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>Intolerance · {supp.intolerance.status}</span>
+              </div>
+              <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.intolerance.text}</div>
+            </div>
+          )}
           <div onClick={onExpand}
             style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
             <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
@@ -1616,6 +1626,15 @@ function SuppCard({ supp, accent, logged, streak, isExp, onToggleLog, onExpand, 
             Activate
           </button>
         </div>
+        {supp.intolerance && (
+          <div style={{ background: C.red + "12", border: `1px solid ${C.red}45`, borderRadius: 8, padding: "10px 12px", marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+              <span style={{ fontSize: 12 }}>⚠️</span>
+              <span style={{ fontSize: 10, color: C.red, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>Intolerance · {supp.intolerance.status}</span>
+            </div>
+            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.intolerance.text}</div>
+          </div>
+        )}
         <div onClick={onExpand}
           style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
           <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
