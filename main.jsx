@@ -53,7 +53,7 @@ const SUPPLEMENTS = [
     why: "GSTM1 + GSTT1 both deleted — your glutathione system carries more load with less enzymatic backup. S-acetyl form survives digestion and enters cells intact, unlike reduced glutathione in OwnIt which is largely destroyed before absorption.",
     target: "Oxidative Stress · Detoxification · Recovery",
     note: "Add alongside OwnIt — NAC in your stack still contributes to endogenous glutathione. These work together. Phase 2 anchor for your GST-null status." },
-  { id: "glycine", time: "evening", phase: 2, label: "Glycine", dose: "3–5g", form: "Powder", status: "pending", source: "protocol",
+  { id: "glycine", time: "evening", phase: 2, label: "Glycine", dose: "3–5g", form: "Powder", status: "active", source: "protocol",
     why: "Glycine is the rate-limiting amino acid for glutathione synthesis (cysteine, covered by your NAC, is the other). With GSTM1 + GSTT1 both deleted, supporting endogenous glutathione production is high-value. Glycine also improves sleep quality and supports collagen synthesis — hitting three of your VERY HIGH pathways at once.",
     target: "Oxidative Stress · Sleep · Collagen & Joints · Detoxification",
     note: "Take at night — glycine lowers core body temperature slightly and improves sleep onset, supporting your APOE E4 glymphatic clearance window. Low cost, well tolerated. Pairs naturally with magnesium glycinate." },
@@ -65,7 +65,8 @@ const SUPPLEMENTS = [
   { id: "omega3", time: "meals", phase: 1, label: "EPA+DHA Omega-3", dose: "2–3g EPA+DHA combined", form: "Softgel (triglyceride form)", status: "pending", source: "protocol",
     why: "FADS1 GT + FADS2 CG variants mean you convert plant-based ALA to EPA/DHA poorly. Combined with APOE E4 neuroinflammation risk, marine-source omega-3 is essential — not optional. E4 carriers show greater cognitive benefit from omega-3 specifically.",
     target: "Inflammation · APOE E4 · Vascular Health · Mood & Behavior",
-    note: "Triglyceride form (rTG) has ~70% better bioavailability. Do not rely on flaxseed — FADS variants impair ALA conversion. Phase 1 foundation — nothing stimulating, safe to start first." },
+    note: "Triglyceride form (rTG) has ~70% better bioavailability. Do not rely on flaxseed — FADS variants impair ALA conversion. Phase 1 foundation — nothing stimulating, safe to start first.",
+    intolerance: { status: "Paused — clinical review", text: "Persistent watery + gassy GI response even at a single softgel taken with food — a fat-malabsorption pattern, not a dose-load issue (splitting the dose and pairing with a fat anchor did not resolve it). Paused as a clean test and to remove a confounder. Cross-reference: elevated lipase (~213 U/L, gating). Flagged for Jack Health. Do not reintroduce or swap omega-3 form until the lipase question is resolved." } },
   { id: "resveratrol", time: "meals", phase: 3, label: "Trans-Resveratrol", dose: "250–500mg", form: "Capsule", status: "pending", source: "protocol",
     why: "Activates SIRT1, upregulates BDNF, reduces amyloid aggregation (APOE E4 mechanism), and activates eNOS for vascular health (ENOS GT variant). One compound addressing both APOE E4 and vascular VERY HIGH simultaneously.",
     target: "APOE E4 · Vascular Health · Memory & Brain · Longevity",
@@ -74,14 +75,14 @@ const SUPPLEMENTS = [
     why: "ENOS GT variant reduces nitric oxide synthase efficiency. Citrulline uses the dietary nitrate → nitrite → NO pathway which completely bypasses the eNOS enzyme — your genetic variant is irrelevant to this route.",
     target: "Vascular Health · Blood Pressure · Exercise Response",
     note: "Best 30–60 min pre-exercise for performance. Can also be taken with any meal for daily vascular support. Avoid antibacterial mouthwash." },
-  { id: "d3k2", time: "meals", phase: 1, label: "Vitamin D3 + K2-MK7", dose: "4000–5000 IU D3 + 100mcg K2", form: "Softgel", status: "pending", source: "protocol",
+  { id: "d3k2", time: "meals", phase: 1, label: "Vitamin D3 + K2-MK7", dose: "4000–5000 IU D3 + 100mcg K2", form: "Softgel", status: "active", source: "protocol",
     why: "VDR triple variant (Fok1 TT, Bsm1 GA, Taq1 TC) impairs Vitamin D receptor function at three points. The 3000 IU in OwnIt is insufficient. K2-MK7 (MenaQ7) directs calcium into bone rather than soft tissue.",
     target: "Bone Health · Memory & Brain · Vascular Health · Hormone Balance",
     note: "Take with largest meal. In addition to D3 in OwnIt, not instead. K2 form must be MenaQ7 specifically. Phase 1 foundation — documented-gap correction." },
-  { id: "collagen", time: "meals", phase: 0, label: "Hydrolyzed Collagen + Vit C", dose: "10–15g collagen + 250–500mg Vit C", form: "Powder", status: "pending", source: "protocol",
+  { id: "collagen", time: "meals", phase: 0, label: "Hydrolyzed Collagen + Vit C", dose: "15g collagen + 250–500mg Vit C", form: "Powder", status: "active", source: "standalone",
     why: "GDF5 TT, VEGFA AA, and COL12A1 AA create a connective tissue repair deficit (all VERY HIGH in your report). Timed collagen + Vit C 30–60 min before exercise increases tendon collagen synthesis by ~20% (2019 study).",
     target: "Collagen & Joints · Injury · Bone Health · Recovery",
-    note: "TIMING CRITICAL — 30–60 min before exercise specifically. Vitamin C is a required cofactor — take it every time. No sequencing sensitivity — can start anytime alongside training." },
+    note: "Active — Organika Enhanced Collagen (Costco Kelowna), ~15g. TIMING CRITICAL on lift days (Tue/Thu/Sun): 30–60 min before the 11am block specifically, since the synthesis window is what makes the timing matter. Rest days: timing flexible, but keep dosing daily. Vitamin C is a required cofactor — take it every time, no exceptions. PROTEIN ACCOUNTING: collagen does NOT count toward your 180g/day protein target — it is low in leucine and contains no tryptophan, so it does not drive muscle protein synthesis. Log it here, not in the protein total. Relevant to the deep six tendinopathy — this is the supplement most directly aimed at it." },
   { id: "creatine", time: "meals", phase: 0, label: "Creatine Monohydrate", dose: "5g", form: "Powder", status: "active", source: "standalone",
     why: "Well-indicated for PPARGC1A AA variant. Creatine supports ATP regeneration in cells with fewer mitochondria — directly compensating for reduced mitochondrial density your genotype creates. Also supports ACTN3 RR power expression.",
     target: "Energy Expenditure · Exercise Response · Power",
@@ -90,8 +91,16 @@ const SUPPLEMENTS = [
     why: "Supports cardiovascular function (vascular health VERY HIGH), bile acid conjugation, and mitochondrial membrane integrity. Synergistic with CoQ10 and PQQ for PPARGC1A AA pathway. Emerging longevity data on taurine decline with age.",
     target: "Vascular Health · Mitochondrial Function · Longevity",
     note: "Can be taken with any meal. Well tolerated. No sequencing sensitivity." },
+  { id: "fisetin", time: "meals", phase: 2, label: "Fisetin (Senolytic Pulse)", dose: "1000–1500mg × 2 consecutive days, every 8 weeks", form: "Capsule", status: "pending", source: "protocol",
+    why: "GSTM1 DEL, GSTT1 DEL, and GPX1 TT variants mean oxidative damage — and by extension senescent cell burden — accumulates faster than average. Fisetin selectively clears senescent cells without harming healthy tissue. Gate note: this was blocked behind the elevated lipase finding (213 U/L); repeat bloodwork on 2026-08-21 came back at 28 U/L, within range, clearing this for first pulse.",
+    target: "Senescence · Oxidative Stress · Inflammation · Longevity",
+    note: "Pulsed dosing, not daily — this differs from the rest of your stack. CYP interaction: fisetin can affect metabolism of Foquest (methylphenidate) and valacyclovir; confirm timing with Jack Health before the first cycle and keep the pulse clear of days either prescription needs to be at full strength. Take with a fatty meal — poorly absorbed without dietary fat. Sourcing: Toniiq Fisetin 500 (iHerb) is the lead pick. Log the pulse date in Settings → Last senolytic pulse date so the Cycles tab countdown stays accurate. First pulse should not run during any other open clinical workup." },
+  { id: "quercetin", time: "meals", phase: 2, label: "Quercetin (Senolytic Pulse)", dose: "500–1000mg × 2 consecutive days, same days as Fisetin", form: "Capsule", status: "pending", source: "protocol",
+    why: "Runs alongside Fisetin in the same pulse — quercetin has independent senolytic activity plus mast-cell-stabilizing anti-inflammatory effects, giving it a dual role against the same GSTM1 DEL / GSTT1 DEL / GPX1 TT oxidative-stress pathway.",
+    target: "Senescence · Inflammation · Oxidative Stress",
+    note: "Paired pulse, not a standalone daily supplement — dose on the same two days as Fisetin, every 8 weeks. Take with a fatty meal. Brands: NOW, Thorne, or Jarrow quercetin." },
   // EVENING
-  { id: "magnesium", time: "evening", phase: 1, label: "Magnesium Glycinate", dose: "300–400mg elemental", form: "Capsule", status: "pending", source: "protocol",
+  { id: "magnesium", time: "evening", phase: 1, label: "Magnesium Glycinate", dose: "300–400mg elemental", form: "Capsule", status: "active", source: "protocol",
     why: "The 30mg in OwnIt is a fraction of therapeutic dose. Magnesium is a cofactor in 300+ reactions including MTHFR enzyme function, COMT catecholamine clearance, bone matrix, and slow-wave sleep. Evening timing supports APOE E4 glymphatic clearance.",
     target: "Mood & Behavior · Methylation · Blood Pressure · Bone Health · Sleep",
     note: "Pre-bed timing supports slow-wave sleep — your primary APOE E4 glymphatic amyloid clearance window. Glycinate preferred for sleep and tolerability. Phase 1 foundation." },
@@ -117,45 +126,49 @@ const PHASES = [
 // ─── Nutrition / Protein Schedule ────────────────────────────────────────────
 // Day types map to the weekly training split:
 //   Lift days  → Tue / Thu / Sun   (weight lifting 11am)
-//   Cardio days→ Mon / Wed / Fri   (cardio 5:30–6am)
+//   Cardio days→ Mon / Wed / Fri   (fasted Zone 2, electrolytes only)
 //   Rest day   → Sat
+// Aligned to OwnIt playbook: 7am breakfast (within 1hr waking, cortisol support),
+// 11am training, 1pm lunch (post-workout nutrient density), 3:30pm light bridge,
+// 6pm dinner (anchor, completed early for 4.5hr digestive window before 10:30 bed).
 // getDayType() resolves the current weekday to one of these.
 const PROTEIN_GOAL_DEFAULT = 180; // 1g per lb bodyweight (180lb)
+const CARB_CEILING = 200; // staying under 200g/day
 
 const NUTRITION_PLANS = {
   lift: {
     id: "lift", label: "Lifting Day", icon: "🏋", color: C.pink,
     sublabel: "Tue · Thu · Sun — weights 11am",
-    note: "ISO100 hydrolyzed WPI pre-lift puts leucine at peak right as you hit working sets — maximizes mTOR activation. MRE held to the afternoon slot where absorption speed doesn't matter.",
+    note: "Training day is where MRE earns its place — the carbs fuel glycogen for your 11am block and post-workout recovery, where they're actually useful rather than a tax. Protein lands within an hour of waking to support your cortisol awakening response.",
     slots: [
-      { id: "l1", time: "7:00am", label: "Breakfast", detail: "Eggs · Greek yogurt · meat", source: "whole", protein: 40 },
-      { id: "l2", time: "10:30am", label: "Pre-Workout Shake", detail: "ISO100 (1 scoop)", source: "iso100", protein: 25 },
-      { id: "l3", time: "12:30pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 45 },
-      { id: "l4", time: "4:00pm", label: "Afternoon Shake", detail: "Redcon1 MRE", source: "mre", protein: 47 },
-      { id: "l5", time: "7:00pm", label: "Dinner", detail: "Whole food", source: "whole", protein: 40 },
+      { id: "l1", time: "7:00am", label: "Breakfast", detail: "Redcon1 MRE (optional swap for eggs + Greek yogurt)", source: "mre", protein: 47, carbs: 47 },
+      { id: "l2", time: "11:00am", label: "Training Block", detail: "Weights — fuel within 60min after", source: "none", protein: 0, carbs: 0 },
+      { id: "l3", time: "1:00pm", label: "Lunch (post-workout)", detail: "Lean protein + whole food", source: "whole", protein: 53, carbs: 45 },
+      { id: "l4", time: "3:30pm", label: "Bridge Snack", detail: "ISO100 (1 scoop) or low-carb bar", source: "iso100", protein: 25, carbs: 2 },
+      { id: "l5", time: "6:00pm", label: "Dinner (anchor)", detail: "Whole food — biggest meal", source: "whole", protein: 60, carbs: 55 },
     ],
   },
   cardio: {
     id: "cardio", label: "Cardio Day", icon: "🏃", color: C.accentB,
-    sublabel: "Mon · Wed · Fri — cardio 5:30–6am",
-    note: "Half-scoop ISO100 pre-cardio protects muscle tissue during near-fasted morning work without GI load at 5:30am. Real food carries the rest of the day.",
+    sublabel: "Mon · Wed · Fri — fasted Zone 2 6am",
+    note: "Fasted Zone 2 with LMNT electrolytes only — no pre-cardio protein. First protein lands at 7am breakfast within an hour of waking, which is exactly what supports your blunted cortisol awakening response. ISO100 keeps breakfast lean on a non-training day.",
     slots: [
-      { id: "c1", time: "5:15am", label: "Pre-Cardio", detail: "ISO100 (½ scoop)", source: "iso100", protein: 13 },
-      { id: "c2", time: "8:00am", label: "Breakfast", detail: "Whole food", source: "whole", protein: 40 },
-      { id: "c3", time: "12:30pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 45 },
-      { id: "c4", time: "4:00pm", label: "Afternoon Shake", detail: "Redcon1 MRE", source: "mre", protein: 47 },
-      { id: "c5", time: "7:00pm", label: "Dinner", detail: "Whole food", source: "whole", protein: 40 },
+      { id: "c1", time: "6:00am", label: "Fasted Cardio", detail: "LMNT electrolytes only", source: "none", protein: 0, carbs: 0 },
+      { id: "c2", time: "7:30am", label: "Breakfast", detail: "ISO100 + eggs / Greek yogurt", source: "iso100", protein: 50, carbs: 15 },
+      { id: "c3", time: "1:00pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 55, carbs: 45 },
+      { id: "c4", time: "3:30pm", label: "Bridge Snack", detail: "½ scoop ISO100 or low-carb bar", source: "iso100", protein: 15, carbs: 1 },
+      { id: "c5", time: "6:00pm", label: "Dinner (anchor)", detail: "Whole food — biggest meal", source: "whole", protein: 65, carbs: 50 },
     ],
   },
   rest: {
     id: "rest", label: "Rest Day", icon: "🛌", color: C.purple,
     sublabel: "Sat — recovery",
-    note: "No fasted training window to protect, so protein leans on whole-food meals for micronutrient density — better aligned with the cellular work than a powder-heavy day.",
+    note: "No training to fuel, so protein leans on whole-food meals for micronutrient density — better aligned with the cellular work than a powder-heavy day. Still protein at breakfast for the cortisol response.",
     slots: [
-      { id: "r1", time: "8:00am", label: "Breakfast", detail: "Whole food", source: "whole", protein: 45 },
-      { id: "r2", time: "12:30pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 50 },
-      { id: "r3", time: "4:00pm", label: "Afternoon Shake", detail: "Redcon1 MRE", source: "mre", protein: 47 },
-      { id: "r4", time: "7:00pm", label: "Dinner", detail: "Whole food", source: "whole", protein: 45 },
+      { id: "r1", time: "7:30am", label: "Breakfast", detail: "Eggs · Greek yogurt · whole food", source: "whole", protein: 50, carbs: 25 },
+      { id: "r2", time: "1:00pm", label: "Lunch", detail: "Whole food", source: "whole", protein: 50, carbs: 45 },
+      { id: "r3", time: "3:30pm", label: "Bridge Snack", detail: "ISO100 (1 scoop) or whole-food snack", source: "iso100", protein: 25, carbs: 2 },
+      { id: "r4", time: "6:00pm", label: "Dinner (anchor)", detail: "Whole food — biggest meal", source: "whole", protein: 60, carbs: 55 },
     ],
   },
 };
@@ -171,6 +184,7 @@ const PROTEIN_SOURCE_META = {
   iso100: { label: "ISO100", color: C.accent },
   mre: { label: "MRE", color: C.orange },
   whole: { label: "Whole food", color: C.subtle },
+  none: { label: "—", color: C.muted },
 };
 
 
@@ -184,41 +198,41 @@ const PROTOCOL_CATEGORIES = [
     actions: [
       {
         id: "d3k2",
-        title: "Add Vitamin D3 + K2-MK7",
-        urgency: "NOW",
-        urgencyColor: C.red,
-        shortDesc: "Standalone supplement — your VDR triple variant makes this critical",
+        title: "Vitamin D3 + K2-MK7 — ACTIVE",
+        urgency: "RUNNING",
+        urgencyColor: C.accent,
+        shortDesc: "Started — VDR triple variant gap now being corrected. Verify 25-OH-D and 1,25-OH-D on next panel",
         why: "Your VDR triple variant (Fok1 TT, Bsm1 GA, Taq1 TC) impairs Vitamin D at three distinct points: absorption, conversion, and receptor binding. The 3000 IU already in your OwnIt stack is likely insufficient for cellular utilization — even if serum levels look adequate, your cells may not be responding to the signal. This affects your bone health (VERY HIGH), brain health via APOE E4, and vascular function simultaneously. This is the single highest-leverage supplement change you can make right now.",
         what: "4000–5000 IU Vitamin D3 + 100mcg K2-MK7 (MenaQ7 form specifically). Take with your largest meal — fat significantly increases absorption. Use a softgel form rather than tablet for D3.",
         brands: "Thorne D3/K2, Pure Encapsulations D3/K2, or any product specifying MenaQ7-form K2",
         timing: "With largest meal, daily",
-        note: "Take in addition to the D3 already in OwnIt — not instead of it. K2-MK7 directs calcium into bone rather than soft tissue, critical given your bone health VERY HIGH rating.",
+        note: "Now active. Taken in addition to the D3 already in OwnIt — not instead of it. K2-MK7 directs calcium into bone rather than soft tissue, critical given your bone health VERY HIGH rating. NEXT STEP: 25-OH-D was not on the 2026-08-21 panel. Get both 25-OH-D and 1,25-OH-D on the next draw — with a VDR triple variant, serum level alone doesn't tell you whether your receptors are responding. This is now a verification item, not an addition item.",
         pathways: ["Bone Health", "Memory & Brain", "Vascular Health", "Hormone Balance"],
       },
       {
         id: "omega3",
-        title: "Add EPA+DHA Omega-3",
-        urgency: "NOW",
+        title: "EPA+DHA Omega-3 — PAUSED, clinical review",
+        urgency: "HELD",
         urgencyColor: C.red,
-        shortDesc: "FADS1/FADS2 variants mean you can't convert plant omega-3 — marine source essential",
+        shortDesc: "Do not reintroduce yet. Lipase normalising does NOT clear this — fecal elastase is the open question",
         why: "Your FADS1 GT + FADS2 CG variants mean you convert plant-based ALA omega-3 to EPA/DHA poorly. This matters because EPA and DHA are the active forms your body needs for reducing neuroinflammation, building neuronal membranes, and resolving inflammatory cascades. Combined with APOE E3/E4 neuroinflammation risk, this moves omega-3 from 'recommended' to essential. E4 carriers specifically show greater cognitive benefit from omega-3 than E3/E3 individuals in multiple studies.",
         what: "2–3g combined EPA+DHA per day. Triglyceride form (look for 'rTG' or 'natural triglyceride' on the label) — significantly higher bioavailability than ethyl ester form.",
         brands: "Nordic Naturals Ultimate Omega, Carlson Elite Omega-3, or algae-based DHA if fish-free preferred",
         timing: "With a meal containing fat",
-        note: "Do not use flaxseed oil as your primary omega-3 — your FADS1/FADS2 variants mean ALA-to-EPA conversion is impaired. You need preformed EPA/DHA from marine sources directly.",
+        note: "PAUSED — do not reintroduce or swap form. Persistent watery/gassy GI response even at a single softgel with food, which is a fat-malabsorption pattern rather than a dose-load issue (splitting the dose and adding a fat anchor did not resolve it). IMPORTANT: the 2026-08-21 lipase result came back normal (28 U/L) and this does NOT release the pause. Serum lipase is typically normal or low in exocrine pancreatic insufficiency, so a normal value does not rule out a fat-handling problem — fecal elastase is the test that answers it. Ask Jack Health for fecal elastase before any reintroduction. Separately: with triglycerides at 0.58, omega-3 is not the right lever for the current LDL/Lp(a) picture, so there is no cardiovascular urgency forcing this. When it does resume: triglyceride (rTG) form, and never flaxseed as primary — FADS1/FADS2 variants impair ALA-to-EPA conversion.",
         pathways: ["Inflammation", "APOE E4", "Vascular Health", "Mood & Behavior", "Recovery"],
       },
       {
         id: "magnesium",
-        title: "Add Magnesium Glycinate — therapeutic dose",
-        urgency: "NOW",
-        urgencyColor: C.red,
-        shortDesc: "30mg in OwnIt stack is a fraction of what your genetic profile requires",
+        title: "Magnesium Glycinate — ACTIVE",
+        urgency: "RUNNING",
+        urgencyColor: C.accent,
+        shortDesc: "Started at therapeutic dose. Serum Mg 0.89 (2026-08-21) — note serum is a poor proxy for tissue status",
         why: "Magnesium is a cofactor in over 300 enzymatic reactions directly implicated in your findings: MTHFR enzyme function requires magnesium, your mood & behavior VERY HIGH pathway (COMT GA) is stabilized by magnesium, your glucose & insulin HIGH pathway needs it for insulin receptor signaling, and it's a structural component of bone matrix. The 30mg glycinate in your OwnIt stack is doing almost nothing therapeutically — it is present but not at a meaningful dose.",
         what: "300–400mg elemental magnesium at night. Glycinate form for best sleep, mood, and bioavailability. Malate is a good alternative if glycinate causes loose stools.",
         brands: "Pure Encapsulations Magnesium Glycinate, Thorne Magnesium Bisglycinate, Doctor's Best High Absorption Magnesium",
         timing: "60–90 minutes before sleep — also directly supports sleep quality relevant to APOE E4 glymphatic clearance",
-        note: "The sleep timing is not arbitrary — magnesium taken before bed supports slow-wave sleep, which is your primary glymphatic clearance window given APOE E4 status.",
+        note: "Now active. The sleep timing is not arbitrary — magnesium taken before bed supports slow-wave sleep, which is your primary glymphatic clearance window given APOE E4 status. Track effect via Oura deep sleep minutes rather than serum: serum magnesium (0.89 mmol/L on 2026-08-21, ref 0.65–1.05) is tightly homeostatically defended and stays normal even when tissue stores are low, so it will not show you whether this is working. Pairs with the evening glycine dose.",
         pathways: ["Mood & Behavior", "Methylation", "Blood Pressure", "Bone Health", "Sleep Quality"],
       },
       {
@@ -231,7 +245,7 @@ const PROTOCOL_CATEGORIES = [
         what: "S-Acetyl Glutathione 200mg (acetylated form survives digestion and enters cells intact) OR Liposomal Glutathione 250–500mg (lipid encapsulation protects from gastric degradation).",
         brands: "Jarrow Formulas S-Acetyl Glutathione, Quicksilver Scientific Liposomal Glutathione",
         timing: "Morning, away from food for best absorption",
-        note: "Add as a separate supplement alongside your OwnIt stack — the NAC already in your stack remains valuable as an endogenous glutathione precursor. These work together, not as replacements.",
+        note: "UNBLOCKED as of 2026-08-21 — this was held behind the elevated lipase gate, which cleared (213 → 28 U/L). Add as a separate supplement alongside your OwnIt stack; the NAC already in your stack remains valuable as an endogenous glutathione precursor. These work together, not as replacements. Sequencing note: you have just activated glycine (the rate-limiting amino acid for endogenous glutathione synthesis) — give that 3–4 weeks alone before layering S-acetyl glutathione on top, or you lose attribution on both. Quicksilver Scientific liposomal (iHerb) is the accessible alternative if the S-acetyl form is hard to source in Canada.",
         pathways: ["Oxidative Stress", "Detoxification", "Recovery"],
       },
       {
@@ -283,16 +297,29 @@ const PROTOCOL_CATEGORIES = [
     actions: [
       {
         id: "hormone_redraw",
-        title: "Hormone Redraw — 48–72hrs Post-Injection",
+        title: "Chase the Markers That Keep Getting Missed",
         urgency: "NOW",
         urgencyColor: C.red,
-        shortDesc: "Prior draw captured peak timing — no protocol decisions until steady-state reading",
-        why: "Your most recent hormone draw was taken the day after an hCG injection, which means it captured a peak value rather than steady-state. This significantly distorts the results — elevated readings in this context don't reflect your actual baseline and should not be used to make protocol decisions (such as adding anastrozole). A properly timed redraw at 48–72 hours post-injection gives you the steady-state picture your protocol decisions should be based on.",
+        shortDesc: "Timing question RESOLVED (T 25.8 at ~48h, 2026-08-21). Open issue is now SHBG, Free T and ApoB — never run, three panels running",
+        why: "The timing problem is solved. The 2026-08-21 draw landed at roughly 48 hours post-injection and returned total testosterone 25.8 nmol/L (ref 7.6–31.4), alongside a 96-hour trough of 17.1 — together those describe a coherent, healthy curve and confirm the hCG protocol is working. LH 0.4 and FSH <1 are expected suppression on hCG, not findings. Estradiol 118 pmol/L is comfortably in range, so no AI is warranted. What remains unresolved is a requisition problem rather than a physiology problem: SHBG, free testosterone, ApoB, folate, serum copper, ceruloplasmin and iron studies have now been requested and not returned across three consecutive panels. Iron was declined on provincial protocol; the others were simply not run. These are the exact numbers your protocol decisions turn on.",
         what: "Expanded panel at 48–72 hours post-injection: Total testosterone, Free testosterone, Estradiol (sensitive assay — not standard), SHBG, LH, FSH, Serum copper, Ceruloplasmin, B12 (serum), RBC Folate, Homocysteine, 25-OH-D, 1,25-OH-D (active Vitamin D — critical given VDR variants), hsCRP, ApoB",
         brands: "Dynacare or LifeLabs in Canada — most of these are standard requisition items",
         timing: "Exactly 48–72 hours after your most recent hCG injection — not before, not significantly after",
-        note: "Request both 25-OH-D (circulating Vitamin D) AND 1,25-OH-D (active hormone form). Your VDR triple variant means your receptors may respond poorly even when serum levels look normal. Both values together tell the full story.",
+        note: "Request both 25-OH-D (circulating Vitamin D) AND 1,25-OH-D (active hormone form). Your VDR triple variant means your receptors may respond poorly even when serum levels look normal. Both values together tell the full story.\n\nPROCESS FIX: the recurring failure is that markers reach the requisition but not the result. Before the next draw, confirm with Jack Health item-by-item that each addition is actually orderable at Valley Medical and not blocked by a provincial billing restriction — that is what killed iron studies, AST, and free T4/T3 on 2026-08-21. Anything needing a clinical indication should have one supplied up front rather than discovered afterwards. Add to the next req: cystatin C (resolves whether the eGFR 92 → 80 drift is real or just creatine plus muscle mass) and fecal elastase (the open omega-3 question).",
         pathways: ["Hormone Balance", "Methylation", "Vitamin D", "Vascular Health"],
+      },
+      {
+        id: "lipid_strategy",
+        title: "Lipid Management — Book the Family Doctor Conversation",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "LDL rose 3.8 → 4.5 while Lp(a) 147 was confirmed. This now outranks everything else on the roadmap",
+        why: "LDL and Lp(a) damage arteries through the same core mechanism — carrying cholesterol into the vessel wall, where it drives inflammation and plaque over decades. Lp(a) is an LDL particle with apolipoprotein(a) attached, which makes it stickier and more prothrombotic, so it does more damage per particle. The two do not simply add; clinically they are treated as multiplying combined risk, because they accelerate the same process by two different routes. APOE E4 is the third multiplier: E4 carriers clear LDL less efficiently and carry higher lifetime risk at the same LDL level. Under CCS 2021 guidance, Lp(a) at or above 100 nmol/L is an explicit risk modifier that argues for earlier and more intensive LDL management regardless of calculated risk score — you are at 147. The reason this outranks the senolytic, peptide and glutathione layers is category: those are optimization of a healthy system, while this is risk that compounds silently for 20–30 years and is largely irreversible once plaque is built. Early sustained LDL control is the intervention with real leverage here, and no supplement pulse substitutes for it.",
+        what: "Options exist on a ladder, from lowest to highest intervention. (1) DIETARY — reduce saturated fat from red meat, egg yolks and dairy; typically 5–15% LDL reduction. Must be executed with choline replacement given APOE E4 + PEMT GC, which is likely why the June-to-August attempt did not move the number. (2) FIBRE AND PLANT STEROLS — soluble fibre plus 2g/day sterols/stanols, 5–10% reduction, no prescription, minimal interaction risk. (3) STATINS — first line pharmacological, 30–50% LDL reduction plus event reduction independent of the number; tradeoffs are myalgia in a subset and a small class effect on blood glucose worth watching given how clean your metabolic markers are. (4) EZETIMIBE — blocks intestinal absorption, adds 15–20%, different mechanism so it stacks with a statin. (5) PCSK9 INHIBITORS — injectable, higher cost, considered for exactly the Lp(a) + APOE E4 profile; also the only class with meaningful direct Lp(a) lowering at roughly 20–25%. (6) Lp(a)-SPECIFIC AGENTS (pelacarsen and similar) — still in trials, not available, but the category exists.",
+        brands: "Family doctor conversation — this is a prescribing decision, not a supplement selection. Bring the 2026-08-21 report plus the June comparison.",
+        timing: "Book now. Do not wait for the next panel — the trend across two panels is the information needed.",
+        note: "Lp(a) is settled: 148 in June and 147 on 2026-08-21, two labs and two assay methods. That is genotype, not variance — no further Lp(a) retesting is needed and no lifestyle change will move it. The entire strategy is therefore aggressive management of everything modifiable around it, with LDL/ApoB as the primary lever. Bring ApoB if you can still get it off the held serum. What is NOT the answer here: omega-3 (triglycerides are already 0.58, so there is nothing for it to fix) and niacin (evidence for hard outcomes did not hold up). Where this conversation lands on the ladder is the doctor's call with you.",
+        pathways: ["Cholesterol", "Vascular Health", "APOE E4", "Lp(a)", "Longevity"],
       },
       {
         id: "truage",
@@ -309,15 +336,15 @@ const PROTOCOL_CATEGORIES = [
       },
       {
         id: "apob",
-        title: "Add ApoB to Next Lipid Panel",
-        urgency: "SOON",
-        urgencyColor: C.orange,
-        shortDesc: "Standard LDL-C is inadequate for APOE E4 carriers — particle number is what matters",
+        title: "ApoB — Ordered But Not Returned. Chase It",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "Was on the 2026-08-21 req and did not come back. With LDL 4.5 and Lp(a) 147 confirmed, this is the missing number that matters most",
         why: "Two independent genetic mechanisms make ApoB the right cardiovascular marker for you. First, APOE E4 impairs LDL particle clearance from circulation. Second, your CETP GA variants (×2) alter the exchange of cholesterol between HDL and LDL particles. Standard lipid panels measure LDL cholesterol content (LDL-C), but it is the number of LDL particles (measured by ApoB) that determines cardiovascular risk — a particle can cause damage regardless of how much cholesterol it carries. With your cholesterol pathway scored HIGH, you may have normal LDL-C but elevated particle number. ApoB is now considered the most predictive cardiovascular risk marker by longevity medicine practitioners.",
         what: "Request ApoB, ApoA1, and hsCRP alongside standard lipid panel (total cholesterol, LDL-C, HDL-C, triglycerides). These are standard lab requisition items at Dynacare.",
         brands: "Dynacare or LifeLabs — standard requisition",
         timing: "Fasted (12 hours) for accurate triglyceride and LDL readings",
-        note: "Longevity medicine target for ApoB is below 80 mg/dL. Standard 'normal' ranges on lab reports are population-average, not longevity-optimized. hsCRP tracks your systemic inflammation load — a direct readout of your IL-6 and TNF-alpha genetic activity.",
+        note: "ACTION: ApoB was on the 2026-08-21 requisition and did not appear on the report. Valley Medical noted serum was held — call and ask whether ApoB can still be added to the retained sample before it is discarded. If the window has closed, it goes on the next req as a priority item, not an optional add.\n\nContext from 2026-08-21: LDL 4.5 mmol/L (up from 3.8 in June), total cholesterol 6.37, non-HDL 4.72, Lp(a) 147 nmol/L (confirming 148 in June across two different assays — this is now settled genotype data, no further Lp(a) retesting needed). Note that roughly 0.5 mmol/L of measured LDL-C is Lp(a)-cholesterol, so true LDL sits nearer 4.0 — but the same correction applied in June, so the ~0.7 rise is real. Triglycerides 0.58 and HDL 1.65 remain excellent, so this is a saturated-fat and genetic-handling pattern rather than a metabolic one. Longevity target for ApoB is below 80 mg/dL; standard lab ranges are population-average, not longevity-optimized.",
         pathways: ["APOE E4", "Cholesterol", "Vascular Health"],
       },
       {
@@ -403,15 +430,15 @@ const PROTOCOL_CATEGORIES = [
     actions: [
       {
         id: "collagen",
-        title: "Add Hydrolyzed Collagen — Timed Around Exercise",
-        urgency: "NOW",
-        urgencyColor: C.red,
-        shortDesc: "Timing is critical — 30–60 min before exercise is 20% more effective for tendon synthesis",
+        title: "Hydrolyzed Collagen — ACTIVE (Organika, ~15g)",
+        urgency: "RUNNING",
+        urgencyColor: C.accent,
+        shortDesc: "Established. Protect the pre-workout timing on lift days — that window is what makes it work",
         why: "Your collagen & joints pathway is VERY HIGH driven by GDF5 TT (reduced cartilage resilience), VEGFA AA (impaired tendon vascularization), and COL12A1 AA (altered collagen fibril organization) — all three starred or VERY HIGH in your report. Hydrolyzed collagen peptides provide the amino acid substrate — glycine, proline, hydroxyproline — that fibroblasts need to synthesize new collagen. A 2019 study specifically showed that taking collagen peptides with Vitamin C 30–60 minutes before exercise increased collagen synthesis markers in tendons by approximately 20% compared to other timing. For your genotype this is not a marginal optimization.",
-        what: "10–15g hydrolyzed collagen peptides + 250–500mg Vitamin C taken 30–60 minutes before exercise. Type I + III collagen blend is most relevant for tendons and ligaments.",
-        brands: "Great Lakes Wellness, Vital Proteins, Further Food. Any unflavored hydrolyzed collagen is appropriate — avoid gelatin (different processing).",
-        timing: "30–60 min before exercise — this is not arbitrary, this is the specific window when fibroblasts are primed to incorporate collagen substrate",
-        note: "BPC-157 in your peptide stack and collagen timing work synergistically — BPC-157 upregulates VEGF receptors for vascularization while timed collagen provides the structural substrate. Run both when peptide cycle is active.",
+        what: "~15g hydrolyzed collagen + 250–500mg Vitamin C. Lift days (Tue/Thu/Sun): 30–60 minutes before the 11am block. Rest days: timing flexible, dosing maintained daily.",
+        brands: "Organika Enhanced Collagen (Costco Kelowna) — already in use, no change needed. Avoid gelatin, which is processed differently.",
+        timing: "30–60 min before exercise on lift days — this is not arbitrary, it is the specific window when fibroblasts are primed to incorporate collagen substrate",
+        note: "Active. Two things to keep straight: (1) PROTEIN ACCOUNTING — collagen does not count toward your 180g/day target. It is low in leucine and has no tryptophan, so it does not drive muscle protein synthesis. Counting it inflates your real protein intake on paper. (2) The Vitamin C is a required cofactor, not an optional pairing — without it the collagen substrate is not effectively hydroxylated. This also partly covers the Vitamin C gap in the OwnIt formula, though not at the 500–1000mg/day level flagged for adrenal support.\n\nSYNERGY: BPC-157 in the pending peptide layer and collagen timing work together — BPC-157 upregulates VEGF receptors for vascularization while timed collagen supplies the structural substrate. Run both once the peptide cycle is active. Most directly relevant standing intervention for the deep six tendinopathy.",
         pathways: ["Collagen & Joints", "Injury", "Bone Health", "Recovery"],
       },
       {
@@ -429,16 +456,29 @@ const PROTOCOL_CATEGORIES = [
       },
       {
         id: "zone2",
-        title: "Add Consistent Zone 2 Cardio",
-        urgency: "SOON",
-        urgencyColor: C.orange,
-        shortDesc: "PPARGC1A AA requires Zone 2 to drive mitochondrial adaptation — HIIT alone is insufficient",
+        title: "Zone 2 Cardio — ACTIVE (Mon · Wed · Fri, 6am fasted)",
+        urgency: "RUNNING",
+        urgencyColor: C.accent,
+        shortDesc: "3x/week already established and exceeding the 2–3 session target. Deep six tendinopathy unaffected by treadmill work",
         why: "Your ACTN3 RR power genotype may pull you naturally toward strength training. But your PPARGC1A AA variant has a specific requirement: prolonged sub-threshold (Zone 2) cardio is the primary stimulus for PGC-1 alpha expression in skeletal muscle — the exact pathway your variant impairs. HIIT also helps but cannot fully replace Zone 2 for mitochondrial density. Aerobic exercise is also the most powerful natural eNOS upregulator that exists — it increases shear stress on vessel walls which directly stimulates nitric oxide production, compensating for your ENOS GT variant regardless of genetics.",
         what: "2–3 sessions per week of Zone 2 cardio, 30–45 minutes each. Zone 2 = conversational pace, roughly 60–70% of max heart rate. Add 1 HIIT session per week (4–6 x 30-second maximal efforts with full recovery).",
         brands: "N/A — training practice. Use Oura heart rate data or a heart rate monitor to confirm Zone 2 range.",
         timing: "Separate from heavy strength sessions — not immediately after high-intensity lifting",
-        note: "Track resting heart rate trend on Oura over weeks as a proxy for mitochondrial adaptation progress. A downward RHR trend is a positive signal that Zone 2 is working.",
+        note: "Already running: Mon/Wed/Fri 6am fasted, plus lifting Tue/Thu/Sun 11am — six sessions a week, ahead of the target set here. Track resting heart rate trend on Oura over weeks as a proxy for mitochondrial adaptation; a downward RHR trend means Zone 2 is working. WATCH: six sessions a week is a real load, and chronic low energy availability flattens the diurnal cortisol rhythm. Given AM cortisol dropped 405 → 201 nmol/L between June and 2026-08-21, audit whether you are fuelling adequately around training before adding any further volume.",
         pathways: ["Energy Expenditure", "Exercise Response", "Vascular Health", "APOE E4"],
+      },
+      {
+        id: "morning_light",
+        title: "Morning Bright Light — Within 60 Minutes of Waking",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "AM cortisol 405 → 201 nmol/L. Most likely nicotine cessation normalising, but light is the free lever on a blunted CAR",
+        why: "First, the likely explanation, because it changes what needs doing: nicotine is a potent direct stimulant of the HPA axis, driving ACTH and cortisol with every dose. In June you were still on nicotine (vaping or 24-hour patch); by the 2026-08-21 draw you had been fully off for roughly ten weeks. Cortisol falling substantially after cessation is expected — which means 405 was the artificially elevated figure and 201 is closer to your real baseline. Two further confounders point the same way: the 09:03 draw sat around four hours after waking, well down the diurnal decline, and June's draw time is unknown. At 201 nmol/L (ref 130–540) you are nowhere near adrenal insufficiency, which starts below roughly 100 with symptoms plus an ACTH stimulation test. The genuine finding is the separately measured blunted cortisol awakening response, and morning bright light is the strongest non-pharmacological lever on CAR that exists.",
+        what: "10,000 lux, 20–30 minutes, within the first 60 minutes of waking, positioned to reach the eyes indirectly at 12–24 inches. Outdoor daylight where possible; a therapy lamp through the dark months. Canadian retail: Carex Day-Light Classic Plus (the most clinically validated option, Amazon.ca / London Drugs), Northern Light Technologies BOXelite (made in Canada, larger 12x15in panel so positioning is less fussy), or Verilux HappyLight for a compact desk option. Best Buy Canada carries a 10,000 lux category.",
+        brands: "Carex Day-Light Classic Plus · Northern Light Technologies BOXelite · Verilux HappyLight",
+        timing: "Within 60 minutes of waking, before or during the 6am cardio prep window",
+        note: "CONFLICT CHECK: your TrueDark glasses must stay strictly evening-only. Amber lenses in the morning work directly against this — store them in a different room so you cannot grab them on autopilot. Two other CAR levers worth more than any supplement: wake-time consistency (CAR is more sensitive to irregular wake times than to sleep duration — pull Oura wake-time variance across weekdays vs weekends; more than an hour of swing is the highest-yield fix), and adequate energy availability across six training sessions a week. What NOT to do: ashwagandha and most adrenal-support formulas LOWER cortisol, which is the wrong direction here; licorice root raises it but also raises blood pressure and drops potassium, a bad trade with LDL 4.5 and Lp(a) 147; DHEA is unwarranted since DHEAS is already strong. VERIFY BEFORE INTERVENING: a single 9am serum cortisol cannot measure CAR. Repeat the salivary CAR (waking, +30, +45 min) now that you are nicotine-free — the rise is the number that matters, and it costs nothing in protocol terms.",
+        pathways: ["Cortisol", "Sleep Quality", "Circadian Rhythm", "Recovery"],
       },
       {
         id: "toxin_reduction",
@@ -502,15 +542,15 @@ const PROTOCOL_CATEGORIES = [
       },
       {
         id: "senolytics_ongoing",
-        title: "Senolytic Pulse — Every 8 Weeks",
-        urgency: "ONGOING",
-        urgencyColor: C.accent,
-        shortDesc: "Already in your protocol — coordinate timing with peptide cycles and Epithalon",
-        why: "Senescent cells — old, damaged cells that refuse to die but secrete inflammatory signals — accumulate faster in individuals with higher oxidative stress burden. Your GSTM1 DEL, GSTT1 DEL, and GPX1 TT variants mean you accumulate oxidative damage more readily, which accelerates senescent cell burden. Fisetin and Quercetin clear senescent cells without harming healthy ones. The 8-week pulse schedule is the most evidence-backed timing for senolytic protocols. Quercetin also provides direct anti-inflammatory benefit via mast cell stabilization, giving it dual function for your profile.",
-        what: "Fisetin 1000–1500mg + Quercetin 1000mg over 2 consecutive days, every 8 weeks. Take with a fatty meal — both are fat-soluble.",
-        brands: "Fisetin: Swanson, NOW Foods. Quercetin: Thorne, Pure Encapsulations",
-        timing: "During peptide off-weeks when possible. If running Epithalon in the same off-month, space senolytic pulse at least 1 week apart from Epithalon protocol.",
-        note: "You already have this in your protocol — the main action here is coordinating timing. Log your senolytic pulse in the Cycles tab to keep the countdown accurate.",
+        title: "Senolytic Pulse — First Cycle Now Unblocked",
+        urgency: "NOW",
+        urgencyColor: C.red,
+        shortDesc: "Lipase gate CLEARED (213 → 28 U/L, 2026-08-21). Designed but never run — this is a first pulse, not a continuation",
+        why: "Senescent cells — old, damaged cells that refuse to die but keep secreting inflammatory signals — accumulate faster in people with higher oxidative stress burden. Your GSTM1 DEL, GSTT1 DEL, and GPX1 TT variants mean you accumulate oxidative damage more readily, which accelerates senescent cell burden. Fisetin and Quercetin clear senescent cells without harming healthy ones, and Quercetin adds mast-cell-stabilizing anti-inflammatory benefit on top. The 8-week pulse schedule is the most evidence-backed timing for senolytic protocols.",
+        what: "Fisetin 1000–1500mg + Quercetin 500–1000mg, taken on 2 consecutive days, every 8 weeks. Take with a fatty meal — both are poorly absorbed without dietary fat.",
+        brands: "Fisetin: Toniiq Fisetin 500 via iHerb (lead pick). Quercetin: NOW, Thorne, or Jarrow.",
+        timing: "During peptide off-weeks when possible. If running Epithalon in the same off-month, space the senolytic pulse at least 1 week apart from the Epithalon protocol. Do not run a first pulse during any open clinical workup.",
+        note: "STATUS CORRECTION: this was previously described here as already running. It was not — it was designed and then held behind the elevated lipase finding (213 U/L). The 2026-08-21 repeat returned 28 U/L (ref 13–60), which clears that gate. This is therefore a FIRST pulse with no prior cycles logged. Before dosing: confirm CYP interaction timing with Jack Health — fisetin can affect metabolism of Foquest (methylphenidate) and valacyclovir, so keep the 2 pulse days clear of any window where either prescription needs to be at full strength. Log the pulse date in Settings so the Cycles countdown starts from a real event rather than an assumed one.",
         pathways: ["Senescence", "Inflammation", "Oxidative Stress", "Longevity"],
       },
     ],
@@ -1170,12 +1210,17 @@ export default function App() {
           const planTotal = plan.slots.reduce((s, x) => s + x.protein, 0);
           const consumed = plan.slots.reduce((s, x) => s + (todayLog[x.id] ? x.protein : 0), 0);
           const goalPct = Math.min(100, Math.round((consumed / goal) * 100));
+          const planCarbs = plan.slots.reduce((s, x) => s + (x.carbs || 0), 0);
+          const carbPct = Math.min(100, Math.round((planCarbs / CARB_CEILING) * 100));
 
-          const toggleSlot = (slotId) => update(d => {
-            if (!d.nutritionLogs[today]) d.nutritionLogs[today] = {};
-            if (d.nutritionLogs[today][slotId]) delete d.nutritionLogs[today][slotId];
-            else d.nutritionLogs[today][slotId] = true;
-          });
+          const toggleSlot = (slot) => {
+            if (slot.source === "none") return; // training/cardio events aren't loggable
+            update(d => {
+              if (!d.nutritionLogs[today]) d.nutritionLogs[today] = {};
+              if (d.nutritionLogs[today][slot.id]) delete d.nutritionLogs[today][slot.id];
+              else d.nutritionLogs[today][slot.id] = true;
+            });
+          };
 
           return (
             <div>
@@ -1201,31 +1246,45 @@ export default function App() {
                 <div style={{ fontSize: 12, color: C.muted }}>
                   {goalPct}% of goal · plan delivers {planTotal}g · {Math.max(0, goal - consumed)}g to go
                 </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+                  <span style={{ fontSize: 11, color: C.muted, minWidth: 38 }}>Carbs</span>
+                  <div style={{ flex: 1, height: 5, background: "#1a2038", borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${carbPct}%`, background: planCarbs > CARB_CEILING ? C.orange : C.accentB, borderRadius: 3 }} />
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: planCarbs > CARB_CEILING ? C.orange : C.subtle }}>{planCarbs} / {CARB_CEILING}g</span>
+                </div>
               </div>
 
               <div style={{ fontSize: 12, color: C.subtle, lineHeight: 1.5, padding: "0 4px 4px", marginBottom: 4 }}>{plan.note}</div>
 
               <SectionTitle>{plan.sublabel}</SectionTitle>
               {plan.slots.map(slot => {
-                const done = !!todayLog[slot.id];
+                const isEvent = slot.source === "none";
+                const done = !isEvent && !!todayLog[slot.id];
                 const src = PROTEIN_SOURCE_META[slot.source];
                 return (
-                  <div key={slot.id} onClick={() => toggleSlot(slot.id)}
-                    style={{ display: "flex", alignItems: "center", gap: 12, background: done ? src.color + "12" : C.surface, border: `1px solid ${done ? src.color + "50" : C.border}`, borderRadius: 14, padding: "13px 16px", marginBottom: 8, cursor: "pointer", transition: "all .15s" }}>
-                    <div style={{ width: 22, height: 22, borderRadius: 7, border: `2px solid ${done ? src.color : C.muted}`, background: done ? src.color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      {done && <span style={{ color: "#000", fontSize: 13, fontWeight: 900 }}>✓</span>}
-                    </div>
-                    <div style={{ minWidth: 62 }}>
+                  <div key={slot.id} onClick={() => toggleSlot(slot)}
+                    style={{ display: "flex", alignItems: "center", gap: 12, background: done ? src.color + "12" : (isEvent ? "#0a0e1a" : C.surface), border: `1px solid ${done ? src.color + "50" : C.border}`, borderRadius: 14, padding: "13px 16px", marginBottom: 8, cursor: isEvent ? "default" : "pointer", opacity: isEvent ? 0.72 : 1, transition: "all .15s" }}>
+                    {isEvent ? (
+                      <div style={{ width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 14 }}>{plan.icon}</div>
+                    ) : (
+                      <div style={{ width: 22, height: 22, borderRadius: 7, border: `2px solid ${done ? src.color : C.muted}`, background: done ? src.color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        {done && <span style={{ color: "#000", fontSize: 13, fontWeight: 900 }}>✓</span>}
+                      </div>
+                    )}
+                    <div style={{ minWidth: 56 }}>
                       <div style={{ fontSize: 12, fontWeight: 700, color: done ? C.text : C.subtle }}>{slot.time}</div>
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>{slot.label}</div>
                       <div style={{ fontSize: 11, color: C.muted }}>{slot.detail}</div>
                     </div>
-                    <div style={{ textAlign: "right", flexShrink: 0 }}>
-                      <div style={{ fontSize: 16, fontWeight: 800, color: done ? src.color : C.muted }}>{slot.protein}g</div>
-                      <div style={{ fontSize: 9, color: src.color, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700 }}>{src.label}</div>
-                    </div>
+                    {!isEvent && (
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                        <div style={{ fontSize: 16, fontWeight: 800, color: done ? src.color : C.muted }}>{slot.protein}g</div>
+                        <div style={{ fontSize: 9, color: C.muted }}>{slot.carbs || 0}g carb</div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -1233,6 +1292,7 @@ export default function App() {
               <SectionTitle>Weekly Structure</SectionTitle>
               {Object.values(NUTRITION_PLANS).map(p => {
                 const t = p.slots.reduce((s, x) => s + x.protein, 0);
+                const c = p.slots.reduce((s, x) => s + (x.carbs || 0), 0);
                 const isToday = p.id === dayType;
                 return (
                   <Row key={p.id}>
@@ -1242,7 +1302,10 @@ export default function App() {
                       {isToday && <span style={{ fontSize: 9, color: p.color, marginLeft: 8, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700 }}>Today</span>}
                       <div style={{ fontSize: 11, color: C.muted }}>{p.sublabel}</div>
                     </div>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: p.color }}>{t}g</span>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: p.color }}>{t}g <span style={{ fontSize: 10, color: C.muted, fontWeight: 600 }}>protein</span></div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: c > CARB_CEILING ? C.orange : C.subtle }}>{c}g carb</div>
+                    </div>
                   </Row>
                 );
               })}
@@ -1549,6 +1612,15 @@ function SuppCard({ supp, accent, logged, streak, isExp, onToggleLog, onExpand, 
               <div style={{ fontSize: 9, color: C.orange, fontWeight: 700 }}>{streak}d</div>
             </div>}
           </div>
+          {supp.intolerance && (
+            <div style={{ background: C.red + "12", border: `1px solid ${C.red}45`, borderRadius: 8, padding: "10px 12px", marginBottom: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                <span style={{ fontSize: 12 }}>⚠️</span>
+                <span style={{ fontSize: 10, color: C.red, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>Intolerance · {supp.intolerance.status}</span>
+              </div>
+              <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.intolerance.text}</div>
+            </div>
+          )}
           <div onClick={onExpand}
             style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
             <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
@@ -1588,6 +1660,15 @@ function SuppCard({ supp, accent, logged, streak, isExp, onToggleLog, onExpand, 
             Activate
           </button>
         </div>
+        {supp.intolerance && (
+          <div style={{ background: C.red + "12", border: `1px solid ${C.red}45`, borderRadius: 8, padding: "10px 12px", marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+              <span style={{ fontSize: 12 }}>⚠️</span>
+              <span style={{ fontSize: 10, color: C.red, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>Intolerance · {supp.intolerance.status}</span>
+            </div>
+            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{supp.intolerance.text}</div>
+          </div>
+        )}
         <div onClick={onExpand}
           style={{ borderTop: `1px solid ${C.border}`, padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
           <span style={{ fontSize: 10, color: C.muted, letterSpacing: "0.06em" }}>{isExp ? "HIDE" : "WHY & HOW"}</span>
